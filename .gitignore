@@ -1,0 +1,6 @@
+.vs/
+*.sln
+/Web.config
+/Web.Debug.config
+/publish.js
+/node_modules
