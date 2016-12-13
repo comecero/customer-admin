@@ -1,0 +1,66 @@
+﻿<div ng-controller="CustomersViewCtrl" class="content container">
+
+    <div class="callout callout-danger" ng-if="exception.error">
+        <h4 translate>Oops! We had a problem.</h4>
+        <p>{{exception.error.message}}</p>
+        <span class="error-code" ng-if="exception.error.reference">Error code: {{exception.error.reference}}</span>
+    </div>
+
+    <div class="panel light-shadow">
+        <div class="panel-heading">
+            <span class="panel-title text-bg text-bold">Your Profile</span>
+        </div>
+        <div class="panel-body">
+
+            <div customer-edit="customer" error="exception.error"></div>
+
+            <div class="row"></div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title" translate>Credentials</span>
+                    <div class="panel-heading-controls">
+                        <a class="btn btn-sm btn-info" ng-show="!editCredentials && customer.username" ng-click="editCredentials = true" translate>Edit</a>
+                        <a class="btn btn-sm btn-info" ng-show="!editCredentials && !customer.username" ng-click="editCredentials = true" translate>Create</a>
+                        <a class="btn btn-sm btn-default" ng-show="editCredentials" ng-click="editCredentials = false" translate>Cancel</a>
+                        <button class="btn btn-sm btn-primary" ng-show="editCredentials" ng-click="setCredentials()" translate>Save</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12" ng-if="!customer.username">
+                        <p class="no-info" translate>You have not created a username and password</p>
+                    </div>
+                    <div ng-if="customer.username">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="name" class="control-label" translate>Username</label>
+                                <input type="text" class="form-control" ng-show="editCredentials" name="username" ng-model="credentials.username">
+                                <div ng-show="!editCredentials">{{customer.username}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                                <label for="company_name" class="control-label" translate>Password</label>
+                                <input type="password" class="form-control" ng-show="editCredentials" name="password" ng-model="credentials.password">
+                                <div ng-show="!editCredentials">****************</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel no-heading">
+                <div class="panel-body panel-embed text-sm">
+                    <div class="col-xs-12 col-md-6">
+                        <div><span translate>Created:</span> <strong>{{customer.date_created | date:'short'}}</strong></div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-6 spacer-b10">
+                        <div><span translate>Updated:</span> <strong>{{customer.date_modified | date:'short'}}</strong></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
