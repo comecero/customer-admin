@@ -18,6 +18,9 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     $scope.geo = GeographiesService;
     //Load the countries
     $scope.countries = $scope.geo.getGeographies().countries;
+    $scope.us_states = $scope.geo.getGeographies().us_states;
+    $scope.ca_provinces = $scope.geo.getGeographies().ca_provinces;
+    $scope.au_states = $scope.geo.getGeographies().au_states;
 
     // Add "EU" as an alias for all EU countries, which the API will accept
     $scope.countries.push({ code: "EU", name: "European Union" });
@@ -34,6 +37,18 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         // Load the paymentMethod
         ApiService.getItem($scope.url, $scope.params).then(function (paymentMethod) {
 
+            var countryObj = _.find($scope.countries, function (country) {
+                return country.code == paymentMethod.data.billing_address.country;
+            });
+           
+            $scope.onCountrySelect(countryObj);
+            var stateObj = _.find($scope.states, function (state) {
+                return state.code == paymentMethod.data.billing_address.state_prov;
+            });
+
+            paymentMethod.data.billing_address.country = countryObj;
+            paymentMethod.data.billing_address.state_prov = stateObj;
+
             $scope.paymentMethod = paymentMethod;
 
         }, function (error) {
@@ -46,6 +61,19 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
 
     }
 
+    $scope.onCountrySelect = function (item, model, label, event) {
+        if (item.code === 'US') {
+            $scope.states = $scope.us_states;
+        } else if (item.code === 'CA') {
+            $scope.states = $scope.ca_provinces;
+        } else if (item.code === 'AU') {
+            $scope.states = $scope.au_states;
+        } else {
+            $scope.paymentMethod.data.billing_address.state_prov = '';
+            $scope.states = null;
+        }
+    };
+
     $scope.addPaymentMethod = function () {
 
         if ($scope.form.$invalid) {
@@ -55,6 +83,8 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
 
         $scope.paymentMethod.type = 'credit_card';
         $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+        if ($scope.paymentMethod.data.billing_address.state_prov)
+        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
         ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods"), { show: "payment_method_id" }).then(
       function (paymentMethod) {
@@ -74,6 +104,9 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
             return;
         }
 
+        $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+        if ($scope.paymentMethod.data.billing_address.state_prov)
+        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
         ApiService.set($scope.paymentMethod, $scope.url, { show: "payment_method_id" })
        .then(
