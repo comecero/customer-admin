@@ -1,0 +1,67 @@
+﻿
+<div class="content container">
+
+   
+
+    <div class="clear spacer-b30 "></div> 
+
+    <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="paymentMethod in list.data">
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="spacer-b10">
+
+                    <div class="">
+                        <a href="#/payment_methods/{{paymentMethod.payment_method_id}}">{{paymentMethod.data.label}}</a>
+                        <a class="pull-right" href="#/payment_methods/{{paymentMethod.payment_method_id}}"><span class="fa fa-pencil"></span></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                
+
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Card Number</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.mask}}</span></div>
+                </div>
+                <div class="overflow-auto spacer-b10">
+                    <div class="pull-left spacer-r10">
+                        <div class="lbl text-xs text-fade"><span>Month</span></div>
+                        <div class="text-bg"><span>{{paymentMethod.data.exp_month}}</span></div>
+                    </div>
+
+                    <div class="pull-left">
+                        <div class="lbl text-xs text-fade"><span>Year</span></div>
+                        <div class="text-bg"><span>{{paymentMethod.data.exp_year}}</span></div>
+                    </div>
+                </div>
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Card Holder</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.cardholder_name}}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Show pagination if there is at least one page -->
+<div class="col-sm-12" ng-if="list.data.length > 0 && settings.page == 'cursor'">
+    <ul class="pager">
+        <li class="previous" ng-click="movePage('-', list.previous_page_before_item)" ng-if="list.previous_page_before_item"><a><i class="fa fa-chevron-circle-left"></i>&nbsp;<span translate>Back</span></a></li>
+        <li class="next" ng-click="movePage('+', list.next_page_after_item)" ng-if="list.next_page_after_item"><a><span translate>Next</span>&nbsp;<i class="fa fa-chevron-circle-right"></i></a></li>
+    </ul>
+</div>
+
+<div class="col-sm-12" ng-if="list.data.length > 0 && settings.page == 'offset'">
+    <ul class="pager">
+        <li class="previous" ng-click="movePage('-', list.previous_page_offset)" ng-if="list.previous_page_offset !== null"><a><i class="fa fa-chevron-circle-left"></i> <span translate>Back</span></a></li>
+        <li class="next" ng-click="movePage('+', list.next_page_offset)" ng-if="list.next_page_offset !== null"><a><span translate>Next</span> <i class="fa fa-chevron-circle-right"></i></a></li>
+    </ul>
+    <p class="text-right" translate>Showing page {{list.current_page}} of {{list.total_pages}}</p>
+</div>
+
+<!-- Show a "not found" message if no payment methods were found  -->
+<div class="col-sm-12" ng-if="list.data.length == 0">
+    <p class="no-info" translate>No payment methods found</p>
+</div>

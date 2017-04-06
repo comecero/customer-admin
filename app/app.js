@@ -45,6 +45,11 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     $routeProvider.when("/invoices/add", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
     $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
+    // Payment Methods
+    $routeProvider.when("/payment_methods", { templateUrl: "/app/pages/payment_methods/list.html", reloadOnSearch: false });
+    $routeProvider.when("/payment_methods/add", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods/:id", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
+
     // Notifications
     $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
     $routeProvider.when("/notifications/:id", { templateUrl: "app/pages/notifications/view.html", reloadOnSearch: true });
