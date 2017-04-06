@@ -11,7 +11,7 @@
 
     <div class="gridtable-header hidden-xs hidden-sm">
 
-        <div class="col-md-4"><label>Product</label></div>
+        <div class="col-md-4"><label>Subscription ID</label></div>
         <div class="col-md-2 btn-header">
             <div class="btn-group" uib-dropdown>
                 <button type="button" class="btn btn-default btn-header dropdown-toggle" uib-dropdown-toggle><span translate>Status</span>&nbsp;&nbsp;<i class="fa fa-caret-down"></i></button>
@@ -61,8 +61,8 @@
     <div class="gridtable-row" ng-repeat="subscription in list.data">
 
         <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="col-xs-5 col-sm-12 hidden-md hidden-lg lbl"><label>Product</label></div>
-            <div class="col-xs-7 col-sm-12 col-md-12 value"><a href="#/subscriptions/{{subscription.subscription_id}}">{{subscription.item.name}}</a></div>
+            <div class="col-xs-5 col-sm-12 hidden-md hidden-lg lbl"><label>Subscription ID</label></div>
+            <div class="col-xs-7 col-sm-12 col-md-12 value"><a href="#/subscriptions/{{subscription.subscription_id}}">{{subscription.subscription_id}}</a></div>
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-2">

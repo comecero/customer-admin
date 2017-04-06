@@ -18,40 +18,40 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     // Routes
 
     // Getting Started
-    $routeProvider.when("/", { templateUrl: "/app/pages/getting_started/index.html", reloadOnSearch: false });
+    $routeProvider.when("/", { templateUrl: "app/pages/getting_started/index.html", reloadOnSearch: false });
 
     // Shipments
-    $routeProvider.when("/shipments", { templateUrl: "/app/pages/shipments/list.html", reloadOnSearch: false });
-    $routeProvider.when("/shipments/:id", { templateUrl: "/app/pages/shipments/view.html", reloadOnSearch: false });
+    $routeProvider.when("/shipments", { templateUrl: "app/pages/shipments/list.html", reloadOnSearch: false });
+    $routeProvider.when("/shipments/:id", { templateUrl: "app/pages/shipments/view.html", reloadOnSearch: false });
 
     // Orders
-    $routeProvider.when("/orders", { templateUrl: "/app/pages/orders/list.html", reloadOnSearch: false });
-    $routeProvider.when("/orders/:id", { templateUrl: "/app/pages/orders/view.html", reloadOnSearch: false });
+    $routeProvider.when("/orders", { templateUrl: "app/pages/orders/list.html", reloadOnSearch: false });
+    $routeProvider.when("/orders/:id", { templateUrl: "app/pages/orders/view.html", reloadOnSearch: false });
 
     // Refunds
-    $routeProvider.when("/refunds", { templateUrl: "/app/pages/refunds/list.html", reloadOnSearch: false });
-    $routeProvider.when("/refunds/:id", { templateUrl: "/app/pages/refunds/view.html", reloadOnSearch: true });
+    $routeProvider.when("/refunds", { templateUrl: "app/pages/refunds/list.html", reloadOnSearch: false });
+    $routeProvider.when("/refunds/:id", { templateUrl: "app/pages/refunds/view.html", reloadOnSearch: true });
 
     // Subscriptions
-    $routeProvider.when("/subscriptions", { templateUrl: "/app/pages/subscriptions/list.html", reloadOnSearch: false });
-    $routeProvider.when("/subscriptions/:id", { templateUrl: "/app/pages/subscriptions/view.html", reloadOnSearch: true });
+    $routeProvider.when("/subscriptions", { templateUrl: "app/pages/subscriptions/list.html", reloadOnSearch: false });
+    $routeProvider.when("/subscriptions/:id", { templateUrl: "app/pages/subscriptions/view.html", reloadOnSearch: true });
 
     // Carts
-    $routeProvider.when("/carts", { templateUrl: "/app/pages/carts/list.html", reloadOnSearch: false });
-    $routeProvider.when("/carts/:id", { templateUrl: "/app/pages/carts/view.html", reloadOnSearch: true });
+    $routeProvider.when("/carts", { templateUrl: "app/pages/carts/list.html", reloadOnSearch: false });
+    $routeProvider.when("/carts/:id", { templateUrl: "app/pages/carts/view.html", reloadOnSearch: true });
 
     // Invoices
-    $routeProvider.when("/invoices", { templateUrl: "/app/pages/invoices/list.html", reloadOnSearch: false });
-    $routeProvider.when("/invoices/add", { templateUrl: "/app/pages/invoices/set.html", reloadOnSearch: true });
-    $routeProvider.when("/invoices/:id", { templateUrl: "/app/pages/invoices/set.html", reloadOnSearch: true });
+    $routeProvider.when("/invoices", { templateUrl: "app/pages/invoices/list.html", reloadOnSearch: false });
+    $routeProvider.when("/invoices/add", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
+    $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
     // Notifications
-    $routeProvider.when("/notifications", { templateUrl: "/app/pages/notifications/list.html", reloadOnSearch: false });
-    $routeProvider.when("/notifications/:id", { templateUrl: "/app/pages/notifications/view.html", reloadOnSearch: true });
-    $routeProvider.when("/notifications/:id/preview", { templateUrl: "/app/pages/notifications/preview.html" });
+    $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
+    $routeProvider.when("/notifications/:id", { templateUrl: "app/pages/notifications/view.html", reloadOnSearch: true });
+    $routeProvider.when("/notifications/:id/preview", { templateUrl: "app/pages/notifications/preview.html" });
 
     // Profile
-    $routeProvider.when("/profile", { templateUrl: "/app/pages/profile/view.html", reloadOnSearch: true })
+    $routeProvider.when("/profile", { templateUrl: "app/pages/profile/view.html", reloadOnSearch: true })
 
     // Routes End
 
