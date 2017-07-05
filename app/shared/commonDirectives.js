@@ -243,7 +243,7 @@ app.directive('login', ['$uibModal', 'authService', 'ApiService', 'SettingsServi
                     var accountSettings = SettingsService.get().account;
                     var params = { account_id: accountSettings.account_id, test: accountSettings.test };
                     var creds = { username: scope.user.username, password: scope.user.password };
-                    ApiService.login(creds, ApiService.buildUrl("/customers/login"), params).then(function (customer) {
+                    ApiService.login(creds, ApiService.buildUrl("/customers/login", SettingsService.get()), params).then(function (customer) {
 
                         // Set the token in storage
                         StorageService.set("token", customer.auth.token);

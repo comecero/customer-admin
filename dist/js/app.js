@@ -46,9 +46,9 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
     // Payment Methods
-    $routeProvider.when("/payment_methods", { templateUrl: "/app/pages/payment_methods/list.html", reloadOnSearch: false });
-    $routeProvider.when("/payment_methods/add", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
-    $routeProvider.when("/payment_methods/:id", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods", { templateUrl: "app/pages/payment_methods/list.html", reloadOnSearch: false });
+    $routeProvider.when("/payment_methods/add", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods/:id/edit", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
 
     // Notifications
     $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
@@ -116,7 +116,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 }]);
 
-app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', function ($rootScope, $route, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
 
     // Define the API and auth hosts
     var apiHost = "api.comecero.com";
@@ -159,7 +159,7 @@ app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'G
         var promises = [];
 
         if (localStorage.getItem("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me"), null, true, localStorage.getItem("token")));
+            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", SettingsService.get()), null, true, localStorage.getItem("token")));
         }
 
         if (promises.length > 0) {
@@ -1865,8 +1865,16 @@ app.service("ApiService", ['$http', '$q', '$rootScope', function ($http, $q, $ro
 
     }
 
-    function buildUrl(endpoint) {
-        return "https://" + $rootScope.apiHost + "/api/v1" + endpoint;
+    function buildUrl(endpoint, settings) {
+
+        // If the url is fully qualified, just return it.
+        if (endpoint.substring(0, 7) == "http://" || endpoint.substring(0, 8) == "https://") {
+            return endpoint;
+        } else {
+            // The api prefix will contain the fully qualified URL if you are running in development mode. The prefix is defined during the app's bootstrap.
+            return settings.config.apiPrefix + endpoint;
+        }
+
     }
 
     function onError(response) {
@@ -1920,7 +1928,7 @@ app.controller("GrowlsCtrl", ['$scope', '$timeout', function ($scope, $timeout) 
 
 }]);
 
-app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynamicLocale', function ($scope, gettextCatalog, ApiService, tmhDynamicLocale) {
+app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynamicLocale', 'SettingsService', function ($scope, gettextCatalog, ApiService, tmhDynamicLocale, SettingsService) {
     $scope.switchLanguage = function (language) {
 
         // The default language does not need to be loaded (English - it's embedded in the HTML).
@@ -1935,7 +1943,7 @@ app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynami
         tmhDynamicLocale.set(utils.getLocale(localStorage.getItem("language")));
 
         // Save the user's preference.
-        ApiService.set({ language: language }, ApiService.buildUrl("/customers/me"));
+        ApiService.set({ language: language }, ApiService.buildUrl("/customers/me", SettingsService.get()));
     };
 }]);
 app.directive('isValidInteger', function () {
@@ -2183,7 +2191,7 @@ app.directive('login', ['$uibModal', 'authService', 'ApiService', 'SettingsServi
                     var accountSettings = SettingsService.get().account;
                     var params = { account_id: accountSettings.account_id, test: accountSettings.test };
                     var creds = { username: scope.user.username, password: scope.user.password };
-                    ApiService.login(creds, ApiService.buildUrl("/customers/login"), params).then(function (customer) {
+                    ApiService.login(creds, ApiService.buildUrl("/customers/login", SettingsService.get()), params).then(function (customer) {
 
                         // Set the token in storage
                         StorageService.set("token", customer.auth.token);

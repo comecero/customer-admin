@@ -1,9 +1,9 @@
-app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.paymentMethodListUrl = ApiService.buildUrl("/customers/me/payment_methods");
+    $scope.resources.paymentMethodListUrl = ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get());
 
 }]);
 
@@ -22,32 +22,32 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     $scope.ca_provinces = $scope.geo.getGeographies().ca_provinces;
     $scope.au_states = $scope.geo.getGeographies().au_states;
 
-    // Add "EU" as an alias for all EU countries, which the API will accept
-    $scope.countries.push({ code: "EU", name: "European Union" });
-
     // Re-sort
     $scope.countries = _.sortBy($scope.countries, "name");
 
     if ($routeParams.id) {
         // Set the url for interacting with this item
-        $scope.url = ApiService.buildUrl("/customers/me/payment_methods/" + $routeParams.id);
+        $scope.url = ApiService.buildUrl("/customers/me/payment_methods/" + $routeParams.id, SettingsService.get());
         $scope.add = false;
         $scope.update = true;
 
         // Load the paymentMethod
         ApiService.getItem($scope.url, $scope.params).then(function (paymentMethod) {
 
-            var countryObj = _.find($scope.countries, function (country) {
-                return country.code == paymentMethod.data.billing_address.country;
-            });
-           
-            $scope.onCountrySelect(countryObj);
-            var stateObj = _.find($scope.states, function (state) {
-                return state.code == paymentMethod.data.billing_address.state_prov;
-            });
+            if (paymentMethod.data && paymentMethod.data.billing_address) {
 
-            paymentMethod.data.billing_address.country = countryObj;
-            paymentMethod.data.billing_address.state_prov = stateObj;
+                var countryObj = _.find($scope.countries, function (country) {
+                    return country.code == paymentMethod.data.billing_address.country;
+                });
+
+                $scope.onCountrySelect(countryObj);
+                var stateObj = _.find($scope.states, function (state) {
+                    return state.code == paymentMethod.data.billing_address.state_prov;
+                });
+
+                paymentMethod.data.billing_address.country = countryObj;
+                paymentMethod.data.billing_address.state_prov = stateObj;
+            }
 
             $scope.paymentMethod = paymentMethod;
 
@@ -57,8 +57,8 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         });
 
     } else {
-
-
+        $scope.add = true;
+        $scope.update = false;
     }
 
     $scope.onCountrySelect = function (item, model, label, event) {
@@ -86,10 +86,10 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         if ($scope.paymentMethod.data.billing_address.state_prov)
         $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
-        ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods"), { show: "payment_method_id" }).then(
+        ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get())).then(
       function (paymentMethod) {
-          GrowlsService.addGrowl({ id: "add_success", name: paymentMethod.payment_method_id, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
-          window.location = "#/payment_methods";
+          GrowlsService.addGrowl({ id: "add_success", name: paymentMethod.data.label || data.type, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
+          utils.redirect($location, "/payment_methods");
       },
       function (error) {
           $scope.exception.error = error;
@@ -99,20 +99,23 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
 
     $scope.updatePaymentMethod = function () {
 
+        $scope.exception.error = null;
+
         if ($scope.form.$invalid) {
             window.scrollTo(0, 0);
             return;
         }
 
-        $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
-        if ($scope.paymentMethod.data.billing_address.state_prov)
-        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+        if ($scope.paymentMethod.type == 'credit_card') {
+            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+            if ($scope.paymentMethod.data.billing_address.state_prov) {
+                $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+            }
+        }
 
-        ApiService.set($scope.paymentMethod, $scope.url, { show: "payment_method_id" })
-       .then(
-       function (paymentMethod) {
-           GrowlsService.addGrowl({ id: "edit_success", name: paymentMethod.payment_method_id, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
-           window.location = "#/payment_methods";
+        ApiService.set($scope.paymentMethod, $scope.url).then(function (paymentMethod) {
+            GrowlsService.addGrowl({ id: "edit_success", name: paymentMethod.data.label || paymentMethod.type, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
+           utils.redirect($location, "/payment_methods");
        },
        function (error) {
            window.scrollTo(0, 0);
@@ -139,7 +142,7 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     $scope.removePaymentMethod = function () {
         ApiService.remove($scope.paymentMethod.url).then(
        function (paymentMethod) {
-           GrowlsService.addGrowl({ id: "delete_success", name: $scope.paymentMethod.payment_method_id, type: "success" });
+           GrowlsService.addGrowl({ id: "delete_success", name: $scope.paymentMethod.data.label || $scope.paymentMethod.type, type: "success" });
            utils.redirect($location, "/payment_methods");
        },
        function (error) {

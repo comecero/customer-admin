@@ -19,7 +19,7 @@
 
 }]);
 
-app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynamicLocale', function ($scope, gettextCatalog, ApiService, tmhDynamicLocale) {
+app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynamicLocale', 'SettingsService', function ($scope, gettextCatalog, ApiService, tmhDynamicLocale, SettingsService) {
     $scope.switchLanguage = function (language) {
 
         // The default language does not need to be loaded (English - it's embedded in the HTML).
@@ -34,6 +34,6 @@ app.controller("LangCtrl", ['$scope', 'gettextCatalog', 'ApiService', 'tmhDynami
         tmhDynamicLocale.set(utils.getLocale(localStorage.getItem("language")));
 
         // Save the user's preference.
-        ApiService.set({ language: language }, ApiService.buildUrl("/customers/me"));
+        ApiService.set({ language: language }, ApiService.buildUrl("/customers/me", SettingsService.get()));
     };
 }]);

@@ -1,9 +1,9 @@
-app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.invoiceListUrl = ApiService.buildUrl("/customers/me/invoices");
+    $scope.resources.invoiceListUrl = ApiService.buildUrl("/customers/me/invoices", SettingsService.get());
 
 }]);
 
@@ -20,7 +20,7 @@ app.controller("InvoicesSetCtrl", ['$scope', '$routeParams', '$location', 'ApiSe
     $scope.params = { expand: "customer.payment_methods,options,payments.payment_method,items.subscription_terms,subscription", formatted: true };
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/invoices/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/invoices/" + $routeParams.id, SettingsService.get());
     $scope.resources.paymentListUrl = $scope.url + "/payments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
 

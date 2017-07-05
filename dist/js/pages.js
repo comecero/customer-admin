@@ -1,9 +1,9 @@
-app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.invoiceListUrl = ApiService.buildUrl("/customers/me/invoices");
+    $scope.resources.invoiceListUrl = ApiService.buildUrl("/customers/me/invoices", SettingsService.get());
 
 }]);
 
@@ -20,7 +20,7 @@ app.controller("InvoicesSetCtrl", ['$scope', '$routeParams', '$location', 'ApiSe
     $scope.params = { expand: "customer.payment_methods,options,payments.payment_method,items.subscription_terms,subscription", formatted: true };
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/invoices/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/invoices/" + $routeParams.id, SettingsService.get());
     $scope.resources.paymentListUrl = $scope.url + "/payments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
 
@@ -88,13 +88,13 @@ app.controller("NotificationsListCtrl", ['$scope', '$routeParams', '$location', 
 
 }]);
 
-app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'GrowlsService', '$sce', function ($scope, $routeParams, ApiService, GrowlsService, $sce) {
+app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'GrowlsService', '$sce', 'SettingsService', function ($scope, $routeParams, ApiService, GrowlsService, $sce, SettingsService) {
 
     $scope.notification = {};
     $scope.exception = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id, SettingsService.get());
     $scope.previewUrl = null;
     $scope.showResend = false;
 
@@ -127,13 +127,13 @@ app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService',
 
 }]);
 
-app.controller("NotificationsPreviewCtrl", ['$scope', '$routeParams', 'ApiService', function ($scope, $routeParams, ApiService) {
+app.controller("NotificationsPreviewCtrl", ['$scope', '$routeParams', 'ApiService', 'SettingsService', function ($scope, $routeParams, ApiService, SettingsService) {
 
     $scope.notification = {};
     $scope.exception = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id)
+    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id, SettingsService.get())
 
     // Load the notification
     var params = { show: "body" };
@@ -149,16 +149,16 @@ app.controller("NotificationsPreviewCtrl", ['$scope', '$routeParams', 'ApiServic
 
 
 
-app.controller("OrdersListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("OrdersListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.orderListUrl = ApiService.buildUrl("/customers/me/orders");
+    $scope.resources.orderListUrl = ApiService.buildUrl("/customers/me/orders", SettingsService.get());
 
 }]);
 
-app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService) {
+app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService, SettingsService) {
 
     $scope.order = {};  
     $scope.payment = {};
@@ -168,7 +168,7 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
     $scope.resources = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id, SettingsService.get());
     $scope.resources.shipmentListUrl = $scope.url + "/shipments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
     $scope.resources.notificationListUrl = $scope.url + "/notifications";
@@ -217,12 +217,12 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
 
 
 
-app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.paymentMethodListUrl = ApiService.buildUrl("/customers/me/payment_methods");
+    $scope.resources.paymentMethodListUrl = ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get());
 
 }]);
 
@@ -241,32 +241,32 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     $scope.ca_provinces = $scope.geo.getGeographies().ca_provinces;
     $scope.au_states = $scope.geo.getGeographies().au_states;
 
-    // Add "EU" as an alias for all EU countries, which the API will accept
-    $scope.countries.push({ code: "EU", name: "European Union" });
-
     // Re-sort
     $scope.countries = _.sortBy($scope.countries, "name");
 
     if ($routeParams.id) {
         // Set the url for interacting with this item
-        $scope.url = ApiService.buildUrl("/customers/me/payment_methods/" + $routeParams.id);
+        $scope.url = ApiService.buildUrl("/customers/me/payment_methods/" + $routeParams.id, SettingsService.get());
         $scope.add = false;
         $scope.update = true;
 
         // Load the paymentMethod
         ApiService.getItem($scope.url, $scope.params).then(function (paymentMethod) {
 
-            var countryObj = _.find($scope.countries, function (country) {
-                return country.code == paymentMethod.data.billing_address.country;
-            });
-           
-            $scope.onCountrySelect(countryObj);
-            var stateObj = _.find($scope.states, function (state) {
-                return state.code == paymentMethod.data.billing_address.state_prov;
-            });
+            if (paymentMethod.data && paymentMethod.data.billing_address) {
 
-            paymentMethod.data.billing_address.country = countryObj;
-            paymentMethod.data.billing_address.state_prov = stateObj;
+                var countryObj = _.find($scope.countries, function (country) {
+                    return country.code == paymentMethod.data.billing_address.country;
+                });
+
+                $scope.onCountrySelect(countryObj);
+                var stateObj = _.find($scope.states, function (state) {
+                    return state.code == paymentMethod.data.billing_address.state_prov;
+                });
+
+                paymentMethod.data.billing_address.country = countryObj;
+                paymentMethod.data.billing_address.state_prov = stateObj;
+            }
 
             $scope.paymentMethod = paymentMethod;
 
@@ -276,8 +276,8 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         });
 
     } else {
-
-
+        $scope.add = true;
+        $scope.update = false;
     }
 
     $scope.onCountrySelect = function (item, model, label, event) {
@@ -305,10 +305,10 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         if ($scope.paymentMethod.data.billing_address.state_prov)
         $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
-        ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods"), { show: "payment_method_id" }).then(
+        ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get())).then(
       function (paymentMethod) {
-          GrowlsService.addGrowl({ id: "add_success", name: paymentMethod.payment_method_id, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
-          window.location = "#/payment_methods";
+          GrowlsService.addGrowl({ id: "add_success", name: paymentMethod.data.label || data.type, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
+          utils.redirect($location, "/payment_methods");
       },
       function (error) {
           $scope.exception.error = error;
@@ -318,20 +318,23 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
 
     $scope.updatePaymentMethod = function () {
 
+        $scope.exception.error = null;
+
         if ($scope.form.$invalid) {
             window.scrollTo(0, 0);
             return;
         }
 
-        $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
-        if ($scope.paymentMethod.data.billing_address.state_prov)
-        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+        if ($scope.paymentMethod.type == 'credit_card') {
+            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+            if ($scope.paymentMethod.data.billing_address.state_prov) {
+                $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+            }
+        }
 
-        ApiService.set($scope.paymentMethod, $scope.url, { show: "payment_method_id" })
-       .then(
-       function (paymentMethod) {
-           GrowlsService.addGrowl({ id: "edit_success", name: paymentMethod.payment_method_id, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
-           window.location = "#/payment_methods";
+        ApiService.set($scope.paymentMethod, $scope.url).then(function (paymentMethod) {
+            GrowlsService.addGrowl({ id: "edit_success", name: paymentMethod.data.label || paymentMethod.type, type: "success", payment_method_id: paymentMethod.payment_method_id, url: "#/payment_methods/" + paymentMethod.payment_method_id + "/edit" });
+           utils.redirect($location, "/payment_methods");
        },
        function (error) {
            window.scrollTo(0, 0);
@@ -358,7 +361,7 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     $scope.removePaymentMethod = function () {
         ApiService.remove($scope.paymentMethod.url).then(
        function (paymentMethod) {
-           GrowlsService.addGrowl({ id: "delete_success", name: $scope.paymentMethod.payment_method_id, type: "success" });
+           GrowlsService.addGrowl({ id: "delete_success", name: $scope.paymentMethod.data.label || $scope.paymentMethod.type, type: "success" });
            utils.redirect($location, "/payment_methods");
        },
        function (error) {
@@ -375,7 +378,7 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
 
 //#region Customers
 
-app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'GrowlsService', 'ApiService', 'ConfirmService', 'GeographiesService', function ($scope, $routeParams, $location, GrowlsService, ApiService, ConfirmService, GeographiesService) {
+app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'GrowlsService', 'ApiService', 'ConfirmService', 'GeographiesService', 'SettingsService', function ($scope, $routeParams, $location, GrowlsService, ApiService, ConfirmService, GeographiesService, SettingsService) {
 
     $scope.customer = {};
     $scope.billing_address = {};
@@ -386,7 +389,7 @@ app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'Gro
     $scope.credentials = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/customers/me");
+    $scope.url = ApiService.buildUrl("/customers/me", SettingsService.get());
 
     // Load the customer
     ApiService.getItem($scope.url).then(function (customer) {
@@ -428,12 +431,12 @@ app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'Gro
 
 //#region Subscriptions
 
-app.controller("SubscriptionsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("SubscriptionsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.subscriptionListUrl = ApiService.buildUrl("/customers/me/subscriptions");
+    $scope.resources.subscriptionListUrl = ApiService.buildUrl("/customers/me/subscriptions", SettingsService.get());
 
 }]);
 
@@ -451,7 +454,7 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     $scope.allowCancel = SettingsService.get().account.allow_customer_subscription_cancel;
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/subscriptions/" + $routeParams.id)
+    $scope.url = ApiService.buildUrl("/subscriptions/" + $routeParams.id, SettingsService.get())
 
     // Prep the billing history
     $scope.resources.invoiceListUrl = $scope.url + "/invoices";

@@ -46,9 +46,9 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
     // Payment Methods
-    $routeProvider.when("/payment_methods", { templateUrl: "/app/pages/payment_methods/list.html", reloadOnSearch: false });
-    $routeProvider.when("/payment_methods/add", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
-    $routeProvider.when("/payment_methods/:id", { templateUrl: "/app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods", { templateUrl: "app/pages/payment_methods/list.html", reloadOnSearch: false });
+    $routeProvider.when("/payment_methods/add", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods/:id/edit", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
 
     // Notifications
     $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
@@ -116,7 +116,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 }]);
 
-app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', function ($rootScope, $route, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
 
     // Define the API and auth hosts
     var apiHost = "api.comecero.com";
@@ -159,7 +159,7 @@ app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'G
         var promises = [];
 
         if (localStorage.getItem("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me"), null, true, localStorage.getItem("token")));
+            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", SettingsService.get()), null, true, localStorage.getItem("token")));
         }
 
         if (promises.length > 0) {

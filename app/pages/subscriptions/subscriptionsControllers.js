@@ -1,12 +1,12 @@
 
 //#region Subscriptions
 
-app.controller("SubscriptionsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("SubscriptionsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.subscriptionListUrl = ApiService.buildUrl("/customers/me/subscriptions");
+    $scope.resources.subscriptionListUrl = ApiService.buildUrl("/customers/me/subscriptions", SettingsService.get());
 
 }]);
 
@@ -24,7 +24,7 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     $scope.allowCancel = SettingsService.get().account.allow_customer_subscription_cancel;
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/subscriptions/" + $routeParams.id)
+    $scope.url = ApiService.buildUrl("/subscriptions/" + $routeParams.id, SettingsService.get())
 
     // Prep the billing history
     $scope.resources.invoiceListUrl = $scope.url + "/invoices";
