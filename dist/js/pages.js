@@ -1,3 +1,10 @@
+app.controller("GettingStartedCtrl", ['$scope', 'SettingsService', function ($scope, SettingsService) {
+
+    // Establish your scope containers
+    var settings = SettingsService.get();
+    $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
+
+}]);
 app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
@@ -102,7 +109,7 @@ app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService',
     var params = { expand: "customer", hide: "data" };
     ApiService.getItem($scope.url, params).then(function (notification) {
         $scope.notification = notification;
-        $scope.previewUrl = $sce.trustAsResourceUrl("/app/pages/notifications/preview/index.html?notification_id=" + notification.notification_id);
+        $scope.previewUrl = $sce.trustAsResourceUrl("app/pages/notifications/preview/index.html?notification_id=" + notification.notification_id);
         $scope.email = notification.customer.email;
     }, function (error) {
         $scope.exception.error = error;
@@ -281,6 +288,11 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     }
 
     $scope.onCountrySelect = function (item, model, label, event) {
+
+        if (!item) {
+            return;
+        }
+
         if (item.code === 'US') {
             $scope.states = $scope.us_states;
         } else if (item.code === 'CA') {
@@ -301,9 +313,12 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         }
 
         $scope.paymentMethod.type = 'credit_card';
-        $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+
+        if ($scope.paymentMethod.data.billing_address.country)
+            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+
         if ($scope.paymentMethod.data.billing_address.state_prov)
-        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+            $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
         ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get())).then(
       function (paymentMethod) {
@@ -326,10 +341,10 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         }
 
         if ($scope.paymentMethod.type == 'credit_card') {
-            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
-            if ($scope.paymentMethod.data.billing_address.state_prov) {
+            if ($scope.paymentMethod.data.billing_address.country)
+                $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+            if ($scope.paymentMethod.data.billing_address.state_prov)
                 $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
-            }
         }
 
         ApiService.set($scope.paymentMethod, $scope.url).then(function (paymentMethod) {
@@ -460,7 +475,7 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     $scope.resources.invoiceListUrl = $scope.url + "/invoices";
 
     // Load the subscription
-    ApiService.getItem($scope.url, { expand: "subscription_plan,customer.payment_methods,item.product", hide: "product.images" }).then(function (subscription) {
+    ApiService.getItem($scope.url, { expand: "items.subscription_terms,customer.payment_methods", hide: "product.images", formatted: true }).then(function (subscription) {
         $scope.model.subscription = subscription;
     }, function (error) {
         $scope.exception.error = error;
@@ -492,7 +507,7 @@ $("document").ready(function () {
 
     // Define the host
     var host = "api.comecero.com";
-    if (window.location.hostname.indexOf("admin-staging.") > -1) {
+    if (window.location.hostname.indexOf("-staging.") > -1) {
         host = "api-staging.comecero.com";
     }
 
@@ -525,7 +540,7 @@ $("document").ready(function () {
 
     // Define the host
     var host = "api.comecero.com";
-    if (window.location.hostname.indexOf("admin-staging.") > -1) {
+    if (window.location.hostname.indexOf("-staging.") > -1) {
         host = "api-staging.comecero.com";
     }
 

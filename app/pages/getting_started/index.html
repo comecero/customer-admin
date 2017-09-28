@@ -1,4 +1,4 @@
-﻿<div class="content container">
+﻿<div ng-controller="GettingStartedCtrl" class="content container">
 
     <div class="clear spacer-b30"></div>
 
@@ -70,8 +70,8 @@
         <div class="panel panel-profile panel-warning">
             <div class="panel-heading">
                 <div class="widget-profile-header">
-                    <a href="#/account/edit"><i class="fa fa-user fa-3"></i>&nbsp;</a><br />
-                    <a href="#/account/edit"><span translate>Update your Profile</span></a>
+                    <a href="#/profile"><i class="fa fa-user fa-3"></i>&nbsp;</a><br />
+                    <a href="#/profile"><span translate>Update your Profile</span></a>
                 </div>
             </div>
             <div class="panel-body">
@@ -86,8 +86,8 @@
         <div class="panel panel-profile panel-danger">
             <div class="panel-heading">
                 <div class="widget-profile-header">
-                    <a><i class="fa fa-comments fa-3"></i>&nbsp;</a><br />
-                    <a><span translate>Contact Us</span></a>
+                    <a ng-href="{{helpUrl}}"><i class="fa fa-comments fa-3"></i>&nbsp;</a><br />
+                    <a ng-href="{{helpUrl}}"><span translate>Contact Us</span></a>
                 </div>
             </div>
             <div class="panel-body">

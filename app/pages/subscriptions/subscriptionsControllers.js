@@ -30,7 +30,7 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     $scope.resources.invoiceListUrl = $scope.url + "/invoices";
 
     // Load the subscription
-    ApiService.getItem($scope.url, { expand: "subscription_plan,customer.payment_methods,item.product", hide: "product.images" }).then(function (subscription) {
+    ApiService.getItem($scope.url, { expand: "items.subscription_terms,customer.payment_methods", hide: "product.images", formatted: true }).then(function (subscription) {
         $scope.model.subscription = subscription;
     }, function (error) {
         $scope.exception.error = error;

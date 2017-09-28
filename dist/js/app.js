@@ -12,6 +12,15 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     cfpLoadingBarProvider.latencyThreshold = 300;
     cfpLoadingBarProvider.includeSpinner = false;
 
+    // Set the favicon
+    if (window.__settings.app.favicon_full) {
+        var favicon = document.createElement("link");
+        favicon.setAttribute("rel", "icon");
+        favicon.setAttribute("type", "image/x-icon");
+        favicon.setAttribute("href", window.__settings.app.favicon_full);
+        document.head.appendChild(favicon);
+    }
+
     // Dynamically load locale files
     tmhDynamicLocaleProvider.localeLocationPattern("https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.8/angular-locale_{{locale}}.js");
 
@@ -181,7 +190,18 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
 
     }
 
-}])
+}]);
+
+// Controllers on the index page
+app.controller("IndexController", ['$scope', 'SettingsService', function ($scope, SettingsService) {
+
+    var settings = SettingsService.get();
+    $scope.title = settings.app.page_title || "Account Management";
+    $scope.logo = settings.app.logo_medium;
+    $scope.company_name = settings.app.company_name || settings.account.company_name;
+    $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
+
+}]);
 
 
 

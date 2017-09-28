@@ -5,7 +5,7 @@
 
     // Define the host
     var host = "api.comecero.com";
-    if (window.location.hostname.indexOf("admin-staging.") > -1) {
+    if (window.location.hostname.indexOf("-staging.") > -1) {
         host = "api-staging.comecero.com";
     }
 

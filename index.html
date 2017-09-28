@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="admin">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Comecero Admin</title>
+    <title ng-controller="IndexController" ng-bind="title"></title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://ajax.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://api.comecero.com https://api-staging.comecero.com;"> 
@@ -39,20 +39,14 @@
 
 </head>
 
-<body class="hold-transition skin-comecero sidebar-mini" ng-app="admin" ng-csp>
+<body class="hold-transition skin-comecero sidebar-mini" ng-csp>
     <div class="wrapper" id="main-wrapper">
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
 
-            <a href="#/" class="logo hidden-sm hidden-md hidden-lg" style="background-color: #2c3e50; text-align:center">
-                <span class="logo-mini"><img src="images/icon_light.png" style="height:46px; margin-left:3px" /></span>
-                <span class="logo-lg"><img src="images/logo.png" style="width:100px" /></span>
-            </a>
-
-            <a href="#/" class="logo hidden-xs">
-                <span class="logo-mini"><img src="images/icon_light.png" style="height:46px; margin-left:3px" /></span>
-                <span class="logo-lg"><img src="images/logo_dark.png" style="width:100px" /></span>
+            <a href="#/" class="logo hidden-xs" ng-controller="IndexController">
+                <span class="logo-lg"><img ng-src="{{logo}}" style="max-width:100px" /></span>
             </a>
 
             <!-- Header Navbar -->
@@ -117,8 +111,8 @@
         <!-- Main Footer -->
         <footer class="main-footer">
             <!-- To the right -->
-            <div class="pull-right">
-                <span class="hidden-xs">Brought to you by <a href="https://comecero.com" target="_blank">Comecero</a>.</span> <a href="https://docs.comecero.com" target="_blank">Documentation</a> | <a href="#/">Support</a>
+            <div class="pull-right" ng-controller="IndexController">
+                <span class="hidden-xs">&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
             </div>
             &nbsp;
         </footer>

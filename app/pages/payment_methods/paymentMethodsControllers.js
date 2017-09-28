@@ -62,6 +62,11 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
     }
 
     $scope.onCountrySelect = function (item, model, label, event) {
+
+        if (!item) {
+            return;
+        }
+
         if (item.code === 'US') {
             $scope.states = $scope.us_states;
         } else if (item.code === 'CA') {
@@ -82,9 +87,12 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         }
 
         $scope.paymentMethod.type = 'credit_card';
-        $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+
+        if ($scope.paymentMethod.data.billing_address.country)
+            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+
         if ($scope.paymentMethod.data.billing_address.state_prov)
-        $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
+            $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
 
         ApiService.set($scope.paymentMethod, ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get())).then(
       function (paymentMethod) {
@@ -107,10 +115,10 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
         }
 
         if ($scope.paymentMethod.type == 'credit_card') {
-            $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
-            if ($scope.paymentMethod.data.billing_address.state_prov) {
+            if ($scope.paymentMethod.data.billing_address.country)
+                $scope.paymentMethod.data.billing_address.country = $scope.paymentMethod.data.billing_address.country.code;
+            if ($scope.paymentMethod.data.billing_address.state_prov)
                 $scope.paymentMethod.data.billing_address.state_prov = $scope.paymentMethod.data.billing_address.state_prov.code;
-            }
         }
 
         ApiService.set($scope.paymentMethod, $scope.url).then(function (paymentMethod) {
