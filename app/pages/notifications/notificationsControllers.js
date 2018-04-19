@@ -7,13 +7,13 @@ app.controller("NotificationsListCtrl", ['$scope', '$routeParams', '$location', 
 
 }]);
 
-app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'GrowlsService', '$sce', function ($scope, $routeParams, ApiService, GrowlsService, $sce) {
+app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'GrowlsService', '$sce', 'SettingsService', function ($scope, $routeParams, ApiService, GrowlsService, $sce, SettingsService) {
 
     $scope.notification = {};
     $scope.exception = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id, SettingsService.get());
     $scope.previewUrl = null;
     $scope.showResend = false;
 
@@ -21,7 +21,7 @@ app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService',
     var params = { expand: "customer", hide: "data" };
     ApiService.getItem($scope.url, params).then(function (notification) {
         $scope.notification = notification;
-        $scope.previewUrl = $sce.trustAsResourceUrl("/app/pages/notifications/preview/index.html?notification_id=" + notification.notification_id);
+        $scope.previewUrl = $sce.trustAsResourceUrl("app/pages/notifications/preview/index.html?notification_id=" + notification.notification_id);
         $scope.email = notification.customer.email;
     }, function (error) {
         $scope.exception.error = error;
@@ -46,13 +46,13 @@ app.controller("NotificationsViewCtrl", ['$scope', '$routeParams', 'ApiService',
 
 }]);
 
-app.controller("NotificationsPreviewCtrl", ['$scope', '$routeParams', 'ApiService', function ($scope, $routeParams, ApiService) {
+app.controller("NotificationsPreviewCtrl", ['$scope', '$routeParams', 'ApiService', 'SettingsService', function ($scope, $routeParams, ApiService, SettingsService) {
 
     $scope.notification = {};
     $scope.exception = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id)
+    $scope.url = ApiService.buildUrl("/notifications/" + $routeParams.id, SettingsService.get())
 
     // Load the notification
     var params = { show: "body" };

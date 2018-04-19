@@ -1,13 +1,13 @@
-app.controller("OrdersListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
+app.controller("OrdersListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
     $scope.exception = {};
     $scope.resources = {};
-    $scope.resources.orderListUrl = ApiService.buildUrl("/customers/me/orders");
+    $scope.resources.orderListUrl = ApiService.buildUrl("/customers/me/orders", SettingsService.get());
 
 }]);
 
-app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService) {
+app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService, SettingsService) {
 
     $scope.order = {};  
     $scope.payment = {};
@@ -17,7 +17,7 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
     $scope.resources = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id);
+    $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id, SettingsService.get());
     $scope.resources.shipmentListUrl = $scope.url + "/shipments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
     $scope.resources.notificationListUrl = $scope.url + "/notifications";

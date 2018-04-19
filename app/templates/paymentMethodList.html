@@ -1,0 +1,81 @@
+﻿
+<div class="content container">
+
+
+
+    <div class="clear spacer-b30 "></div>
+
+    <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="paymentMethod in list.data">
+        <div class="panel">
+            <div class="panel-heading">
+                <div class="">
+                    <a ng-href="#/payment_methods/{{paymentMethod.payment_method_id}}/edit" class="text-capitalize">{{paymentMethod.data.label || paymentMethod.type | removeUnderscore}}</a>
+                    <a class="pull-right" ng-href="#/payment_methods/{{paymentMethod.payment_method_id}}/edit"><span class="fa fa-pencil"></span></a>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-show="paymentMethod.type == 'credit_card'">
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Card Number</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.mask}}</span></div>
+                </div>
+                <div class="overflow-auto spacer-b10">
+                    <div class="pull-left spacer-r10">
+                        <div class="lbl text-xs text-fade"><span>Month</span></div>
+                        <div class="text-bg"><span>{{paymentMethod.data.exp_month}}</span></div>
+                    </div>
+
+                    <div class="pull-left">
+                        <div class="lbl text-xs text-fade"><span>Year</span></div>
+                        <div class="text-bg"><span>{{paymentMethod.data.exp_year}}</span></div>
+                    </div>
+                </div>
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Cardholder Name</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.cardholder_name}}</span></div>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-show="paymentMethod.type == 'paypal'">
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Billing Agreement ID</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.billing_agreement_id}}</span></div>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-show="paymentMethod.type == 'amazon_pay'">
+                <div class="spacer-b10">
+                    <div class="lbl text-xs text-fade"><span>Billing Agreement ID</span></div>
+                    <div class="text-bg"><span>{{paymentMethod.data.billing_agreement_id}}</span></div>
+                </div>
+            </div>
+
+            <div class="panel-footer" ng-show="paymentMethod.is_default">
+                <i class="fa fa-check-square-o text-success spacer-l10"></i> <span translate>Default payment method</span>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Show pagination if there is at least one page -->
+<div class="col-sm-12" ng-if="list.data.length > 0 && settings.page == 'cursor'">
+    <ul class="pager">
+        <li class="previous" ng-click="movePage('-', list.previous_page_before_item)" ng-if="list.previous_page_before_item"><a><i class="fa fa-chevron-circle-left"></i>&nbsp;<span translate>Back</span></a></li>
+        <li class="next" ng-click="movePage('+', list.next_page_after_item)" ng-if="list.next_page_after_item"><a><span translate>Next</span>&nbsp;<i class="fa fa-chevron-circle-right"></i></a></li>
+    </ul>
+</div>
+
+<div class="col-sm-12" ng-if="list.data.length > 0 && settings.page == 'offset'">
+    <ul class="pager">
+        <li class="previous" ng-click="movePage('-', list.previous_page_offset)" ng-if="list.previous_page_offset !== null"><a><i class="fa fa-chevron-circle-left"></i> <span translate>Back</span></a></li>
+        <li class="next" ng-click="movePage('+', list.next_page_offset)" ng-if="list.next_page_offset !== null"><a><span translate>Next</span> <i class="fa fa-chevron-circle-right"></i></a></li>
+    </ul>
+    <p class="text-right" translate>Showing page {{list.current_page}} of {{list.total_pages}}</p>
+</div>
+
+<!-- Show a "not found" message if no payment methods were found  -->
+<div class="col-sm-12" ng-if="list.data.length == 0">
+    <p class="no-info" translate>No payment methods found</p>
+</div>

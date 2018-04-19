@@ -209,8 +209,16 @@
 
     }
 
-    function buildUrl(endpoint) {
-        return "https://" + $rootScope.apiHost + "/api/v1" + endpoint;
+    function buildUrl(endpoint, settings) {
+
+        // If the url is fully qualified, just return it.
+        if (endpoint.substring(0, 7) == "http://" || endpoint.substring(0, 8) == "https://") {
+            return endpoint;
+        } else {
+            // The api prefix will contain the fully qualified URL if you are running in development mode. The prefix is defined during the app's bootstrap.
+            return settings.config.apiPrefix + endpoint;
+        }
+
     }
 
     function onError(response) {

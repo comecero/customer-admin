@@ -3,8 +3,11 @@ window.__settings.account = {
     "account_id": "KO0000",
     "test": true,
     "allow_save_cards": true,
-    "allow_customer_subscription_cancel": false,
+    "allow_customer_subscription_cancel": true,
     "global_footer_html": null,
+    "company_name": "My Co, Inc",
+    "support_email": "support@example.com",
+    "support_website": "https://example.com",
     "currencies": [
         { "code": "AUD", "name": "Australian Dollar" },
         { "code": "CAD", "name": "Canadian Dollar" },

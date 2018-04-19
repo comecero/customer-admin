@@ -12,46 +12,60 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     cfpLoadingBarProvider.latencyThreshold = 300;
     cfpLoadingBarProvider.includeSpinner = false;
 
+    // Set the favicon
+    if (window.__settings.app.favicon_full) {
+        var favicon = document.createElement("link");
+        favicon.setAttribute("rel", "icon");
+        favicon.setAttribute("type", "image/x-icon");
+        favicon.setAttribute("href", window.__settings.app.favicon_full);
+        document.head.appendChild(favicon);
+    }
+
     // Dynamically load locale files
-    tmhDynamicLocaleProvider.localeLocationPattern("https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.8/angular-locale_{{locale}}.js");
+    tmhDynamicLocaleProvider.localeLocationPattern("https://static.comecero.com/libraries/angularjs/1.5.5/i18n/angular-locale_{{locale}}.js");
 
     // Routes
 
     // Getting Started
-    $routeProvider.when("/", { templateUrl: "/app/pages/getting_started/index.html", reloadOnSearch: false });
+    $routeProvider.when("/", { templateUrl: "app/pages/getting_started/index.html", reloadOnSearch: false });
 
     // Shipments
-    $routeProvider.when("/shipments", { templateUrl: "/app/pages/shipments/list.html", reloadOnSearch: false });
-    $routeProvider.when("/shipments/:id", { templateUrl: "/app/pages/shipments/view.html", reloadOnSearch: false });
+    $routeProvider.when("/shipments", { templateUrl: "app/pages/shipments/list.html", reloadOnSearch: false });
+    $routeProvider.when("/shipments/:id", { templateUrl: "app/pages/shipments/view.html", reloadOnSearch: false });
 
     // Orders
-    $routeProvider.when("/orders", { templateUrl: "/app/pages/orders/list.html", reloadOnSearch: false });
-    $routeProvider.when("/orders/:id", { templateUrl: "/app/pages/orders/view.html", reloadOnSearch: false });
+    $routeProvider.when("/orders", { templateUrl: "app/pages/orders/list.html", reloadOnSearch: false });
+    $routeProvider.when("/orders/:id", { templateUrl: "app/pages/orders/view.html", reloadOnSearch: false });
 
     // Refunds
-    $routeProvider.when("/refunds", { templateUrl: "/app/pages/refunds/list.html", reloadOnSearch: false });
-    $routeProvider.when("/refunds/:id", { templateUrl: "/app/pages/refunds/view.html", reloadOnSearch: true });
+    $routeProvider.when("/refunds", { templateUrl: "app/pages/refunds/list.html", reloadOnSearch: false });
+    $routeProvider.when("/refunds/:id", { templateUrl: "app/pages/refunds/view.html", reloadOnSearch: true });
 
     // Subscriptions
-    $routeProvider.when("/subscriptions", { templateUrl: "/app/pages/subscriptions/list.html", reloadOnSearch: false });
-    $routeProvider.when("/subscriptions/:id", { templateUrl: "/app/pages/subscriptions/view.html", reloadOnSearch: true });
+    $routeProvider.when("/subscriptions", { templateUrl: "app/pages/subscriptions/list.html", reloadOnSearch: false });
+    $routeProvider.when("/subscriptions/:id", { templateUrl: "app/pages/subscriptions/view.html", reloadOnSearch: true });
 
     // Carts
-    $routeProvider.when("/carts", { templateUrl: "/app/pages/carts/list.html", reloadOnSearch: false });
-    $routeProvider.when("/carts/:id", { templateUrl: "/app/pages/carts/view.html", reloadOnSearch: true });
+    $routeProvider.when("/carts", { templateUrl: "app/pages/carts/list.html", reloadOnSearch: false });
+    $routeProvider.when("/carts/:id", { templateUrl: "app/pages/carts/view.html", reloadOnSearch: true });
 
     // Invoices
-    $routeProvider.when("/invoices", { templateUrl: "/app/pages/invoices/list.html", reloadOnSearch: false });
-    $routeProvider.when("/invoices/add", { templateUrl: "/app/pages/invoices/set.html", reloadOnSearch: true });
-    $routeProvider.when("/invoices/:id", { templateUrl: "/app/pages/invoices/set.html", reloadOnSearch: true });
+    $routeProvider.when("/invoices", { templateUrl: "app/pages/invoices/list.html", reloadOnSearch: false });
+    $routeProvider.when("/invoices/add", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
+    $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
+
+    // Payment Methods
+    $routeProvider.when("/payment_methods", { templateUrl: "app/pages/payment_methods/list.html", reloadOnSearch: false });
+    $routeProvider.when("/payment_methods/add", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
+    $routeProvider.when("/payment_methods/:id/edit", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
 
     // Notifications
-    $routeProvider.when("/notifications", { templateUrl: "/app/pages/notifications/list.html", reloadOnSearch: false });
-    $routeProvider.when("/notifications/:id", { templateUrl: "/app/pages/notifications/view.html", reloadOnSearch: true });
-    $routeProvider.when("/notifications/:id/preview", { templateUrl: "/app/pages/notifications/preview.html" });
+    $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
+    $routeProvider.when("/notifications/:id", { templateUrl: "app/pages/notifications/view.html", reloadOnSearch: true });
+    $routeProvider.when("/notifications/:id/preview", { templateUrl: "app/pages/notifications/preview.html" });
 
     // Profile
-    $routeProvider.when("/profile", { templateUrl: "/app/pages/profile/view.html", reloadOnSearch: true })
+    $routeProvider.when("/profile", { templateUrl: "app/pages/profile/view.html", reloadOnSearch: true })
 
     // Routes End
 
@@ -111,7 +125,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 }]);
 
-app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', function ($rootScope, $route, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
 
     // Define the API and auth hosts
     var apiHost = "api.comecero.com";
@@ -154,7 +168,7 @@ app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'G
         var promises = [];
 
         if (localStorage.getItem("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me"), null, true, localStorage.getItem("token")));
+            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", SettingsService.get()), null, true, localStorage.getItem("token")));
         }
 
         if (promises.length > 0) {
@@ -176,6 +190,17 @@ app.run(['$rootScope', '$route', '$templateCache', '$location', 'ApiService', 'G
 
     }
 
-}])
+}]);
+
+// Controllers on the index page
+app.controller("IndexController", ['$scope', 'SettingsService', function ($scope, SettingsService) {
+
+    var settings = SettingsService.get();
+    $scope.title = settings.app.page_title || "Account Management";
+    $scope.logo = settings.app.logo_medium;
+    $scope.company_name = settings.app.company_name || settings.account.company_name;
+    $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
+
+}]);
 
 

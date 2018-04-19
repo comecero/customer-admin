@@ -1,7 +1,7 @@
 
 //#region Customers
 
-app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'GrowlsService', 'ApiService', 'ConfirmService', 'GeographiesService', function ($scope, $routeParams, $location, GrowlsService, ApiService, ConfirmService, GeographiesService) {
+app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'GrowlsService', 'ApiService', 'ConfirmService', 'GeographiesService', 'SettingsService', function ($scope, $routeParams, $location, GrowlsService, ApiService, ConfirmService, GeographiesService, SettingsService) {
 
     $scope.customer = {};
     $scope.billing_address = {};
@@ -12,7 +12,7 @@ app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'Gro
     $scope.credentials = {};
 
     // Set the url for interacting with this item
-    $scope.url = ApiService.buildUrl("/customers/me");
+    $scope.url = ApiService.buildUrl("/customers/me", SettingsService.get());
 
     // Load the customer
     ApiService.getItem($scope.url).then(function (customer) {
