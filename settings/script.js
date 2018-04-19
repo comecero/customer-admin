@@ -51,7 +51,7 @@
             };
         }
         
-        script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
+        script.src = "https://static.comecero.com/libraries/jquery/2.1.4/jquery.min.js";
         document.getElementsByTagName("head")[0].appendChild(script);
     } else {
         onLoaded();

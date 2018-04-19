@@ -22,7 +22,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     }
 
     // Dynamically load locale files
-    tmhDynamicLocaleProvider.localeLocationPattern("https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.8/angular-locale_{{locale}}.js");
+    tmhDynamicLocaleProvider.localeLocationPattern("https://static.comecero.com/libraries/angularjs/1.5.5/i18n/angular-locale_{{locale}}.js");
 
     // Routes
 
