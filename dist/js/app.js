@@ -79,7 +79,13 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
                 // Append the current bearer if not already in the request. This is useful on replays of requests that occured after a login timeout.
                 if (config.isApi == true) {
+
                     var token = localStorage.getItem("token");
+                    if (!token) {
+                        token = utils.getCookie("token");
+                        localStorage.setItem("token", token);
+                    }
+
                     if (token) {
                         config.headers.Authorization = "Bearer " + token;
                     }
@@ -1692,6 +1698,10 @@ app.service("ApiService", ['$http', '$q', '$rootScope', function ($http, $q, $ro
         if (data == null) {
             data = undefined;
         }
+
+        // Remove any existing token in storage
+        localStorage.removeItem("token");
+        utils.setCookie("token", "", -60);
 
         var headers = {};
         headers["Content-Type"] = "application/json";
@@ -3619,7 +3629,8 @@ app.service("SettingsService", ['$rootScope', "$q", "ApiService", function ($roo
             settings.config.development = true;
 
             // Make the apiPrefix a fully qualified url since requests in development mode don't have access to the reverse proxy.
-            settings.config.apiPrefix = "https://api.comecero.com" + settings.config.apiPrefix;
+            var apiHost = settings.account.api_host || settings.app.api_host || "api.comecero.com";
+            settings.config.apiPrefix = ("https://" + apiHost) + settings.config.apiPrefix;
         }
 
         return settings;

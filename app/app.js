@@ -79,7 +79,13 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
                 // Append the current bearer if not already in the request. This is useful on replays of requests that occured after a login timeout.
                 if (config.isApi == true) {
+
                     var token = localStorage.getItem("token");
+                    if (!token) {
+                        token = utils.getCookie("token");
+                        localStorage.setItem("token", token);
+                    }
+
                     if (token) {
                         config.headers.Authorization = "Bearer " + token;
                     }
