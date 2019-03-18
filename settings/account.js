@@ -1,6 +1,7 @@
 ﻿window.__settings = window.__settings || {};
 window.__settings.account = {
     "account_id": "KO0000",
+    "api_host": "api-dev.comecero.com",
     "test": true,
     "allow_save_cards": true,
     "allow_customer_subscription_cancel": true,
