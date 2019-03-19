@@ -5,6 +5,17 @@ app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location',
     $scope.resources = {};
     $scope.resources.paymentMethodListUrl = ApiService.buildUrl("/customers/me/payment_methods", SettingsService.get());
 
+    $scope.functions = {};
+    $scope.functions.getPaymentImageName = function (paymentMethod) {
+        if (paymentMethod) {
+            if (paymentMethod.type == "credit_card") {
+                return (paymentMethod.data.type.toLowerCase() + ".png").replace(" ", "_");
+            } else {
+                return (paymentMethod.type.toLowerCase() + ".png").replace(" ", "_");
+            }
+        }
+    }
+
 }]);
 
 app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 'ApiService', 'SettingsService', 'ConfirmService', 'GrowlsService', 'GeographiesService', function ($scope, $routeParams, $location, ApiService, SettingsService, ConfirmService, GrowlsService, GeographiesService) {
@@ -110,6 +121,16 @@ app.controller("PaymentMethodsSetCtrl", ['$scope', '$routeParams', '$location', 
            $scope.exception.error = error;
        });
     };
+
+    $scope.getPaymentImageName = function (paymentMethod) {
+        if (paymentMethod) {
+            if (paymentMethod.type == "credit_card") {
+                return (paymentMethod.data.type.toLowerCase() + ".png").replace(" ", "_");
+            } else {
+                return (paymentMethod.type.toLowerCase() + ".png").replace(" ", "_");
+            }
+        }
+    }
 
 }]);
 

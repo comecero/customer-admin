@@ -15,27 +15,17 @@
                     <div class="text-bg"><span>{{paymentMethod.data.mask}} ({{paymentMethod.data.exp_month}}/{{paymentMethod.data.exp_year}})</span></div>
                 </div>
                 <div class="pull-right">
-                    <img ng-src="images/{{paymentMethod.data.type}}.png" style="height: 22px;" />
+                    <img ng-src="images/{{functions.getPaymentImageName(paymentMethod)}}" style="height: 22px;" />
                 </div>
             </div>
 
-            <div class="panel-body" ng-if="paymentMethod.type == 'paypal'">
+            <div class="panel-body" ng-if="paymentMethod.type == 'paypal' || paymentMethod.type == 'amazon_pay'">
                 <div class="spacer-b10">
                     <div class="lbl text-xs text-fade"><span>Billing Agreement ID</span></div>
                     <div class="text-bg"><span>{{paymentMethod.data.billing_agreement_id}}</span></div>
                 </div>
                 <div class="pull-right">
-                    <img ng-src="images/{{paymentMethod.type}}.png" style="height: 22px;" />
-                </div>
-            </div>
-
-            <div class="panel-body" ng-if="paymentMethod.type == 'amazon_pay'">
-                <div class="spacer-b10">
-                    <div class="lbl text-xs text-fade"><span>Billing Agreement ID</span></div>
-                    <div class="text-bg"><span>{{paymentMethod.data.billing_agreement_id}}</span></div>
-                </div>
-                <div class="pull-right">
-                    <img ng-src="images/{{paymentMethod.type}}.png" style="height: 22px;" />
+                    <img ng-src="images/{{functions.getPaymentImageName(paymentMethod)}}" style="height: 22px;" />
                 </div>
             </div>
 

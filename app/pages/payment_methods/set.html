@@ -14,17 +14,10 @@
         <div class="panel light-shadow">
             <div class="panel-heading" ng-if="!add">
                 <span class="panel-title text-bg text-bold text-capitalize">{{paymentMethod.data.label || paymentMethod.type | removeUnderscore}}</span>
+                <span class="pull-right" ng-if="paymentMethod.type"><img ng-src="images/{{getPaymentImageName(paymentMethod)}}" style="max-height:22px;" /></span>
             </div>
             <div class="panel-body">
                 <div ng-if="paymentMethod.type == 'credit_card' || add">
-
-                    <div class="col-xs-12">
-                        <div class="form-group" show-errors>
-                            <label for="label" class="control-label" translate>Label</label>
-                            <input type="text" name="label" class="form-control" ng-model="paymentMethod.data.label" />
-                        </div>
-                    </div>
-
                     <div class="col-xs-12" ng-if="add">
                         <div class="form-group" show-errors>
                             <label for="card_number" class="control-label" translate>Card Number</label>
@@ -65,7 +58,12 @@
                             <p class="help-block hidden fadeInDown" translate>Please provide card holder name.</p>
                         </div>
                     </div>
-
+                    <div class="col-xs-12" ng-if="!add">
+                        <div class="form-group" show-errors>
+                            <label for="label" class="control-label" translate>Label</label>
+                            <input type="text" name="label" class="form-control" ng-model="paymentMethod.data.label" />
+                        </div>
+                    </div>
                     <div class="col-xs-12">
                         <h3 translate>Billing Address</h3>
                     </div>
