@@ -16,11 +16,12 @@
 
     <!-- Local styles -->
     <link rel="stylesheet" href="dist/css/libraries.css" />
-    <link rel="stylesheet" href="dist/css/base.css">
+    <link rel="stylesheet" href="less/style.css">
 
     <!-- Pull in the app and account settings. These must come before any app bootstrapping. In local development, these are just static files. In the hosted environment, these files are supplied dynamically with "live" settings. -->
     <script src="settings/app.js"></script>
     <script src="settings/account.js"></script>
+    <script src="settings/style.js"></script>
 
     <!-- Frameworks from CDNs -->
     <script src="https://static.comecero.com/libraries/jquery/2.1.4/jquery.min.js"></script>
@@ -44,9 +45,15 @@
         <header class="main-header">
             <!-- Logo -->
 
-            <a href="#/" class="logo hidden-xs" ng-controller="IndexController">
-                <span class="logo-lg"><img ng-src="{{logo}}" style="max-width:100px" /></span>
-            </a>
+            <div ng-controller="IndexController">
+                <a href="#/" class="logo hidden-xs">
+                    <span class="logo-lg"><img ng-src="{{logo}}" style="max-width:100px; margin-bottom: 5px;" /></span>
+                </a>
+
+                <a href="#/" class="logo hidden-sm hidden-md hidden-lg" style="border-bottom: 1px solid #eee;">
+                    <span class="logo-lg text-center"><img ng-src="{{logo}}" style="max-width:100px; margin-bottom: 8px;" /></span>
+                </a>
+            </div>
 
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -111,7 +118,7 @@
         <footer class="main-footer">
             <!-- To the right -->
             <div class="pull-right" ng-controller="IndexController">
-                <span class="hidden-xs">&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
+                <span>&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
             </div>
             &nbsp;
         </footer>

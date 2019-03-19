@@ -5,6 +5,16 @@ app.controller("OrdersListCtrl", ['$scope', '$routeParams', '$location', '$q', '
     $scope.resources = {};
     $scope.resources.orderListUrl = ApiService.buildUrl("/customers/me/orders", SettingsService.get());
 
+    $scope.functions = {};
+
+    $scope.functions.toItemCsv = function (order) {
+        if (order && order.items) {
+            var names = _.pluck(order.items, "name");
+            var csv = names.join(", ");
+            return csv;
+        }
+    }
+
 }]);
 
 app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService, SettingsService) {
@@ -23,7 +33,7 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
     $scope.resources.notificationListUrl = $scope.url + "/notifications";
 
     // Load the order
-    var params = { expand: "customer,payment.response_data,payment.payment_method,payment.gateway,payment.refunds,items.product,items.subscription,items.download.file,items.license.license_service,shipments", hide: "items.product.images,items.license.license_service.configuration", formatted: true };
+    var params = { expand: "customer,payment.response_data,payment.payment_method,payment.gateway,payment.refunds,items.product,items.subscription,items.subscription_terms,items.download.file,items.license.license_service,shipments", hide: "items.product.images,items.license.license_service.configuration", formatted: true };
     ApiService.getItem($scope.url, params).then(function (order) {
         $scope.order = order;
 

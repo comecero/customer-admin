@@ -4,7 +4,6 @@
     "type": "string",
     "label": "Company Name",
     "description": "The company name that will appear on your pages. If not provided the company name from your account profile will be used.",
-    "section": "Design",
     "required": false,
     "max_length": 50
   },
@@ -13,23 +12,6 @@
     "type": "string",
     "label": "Page Title",
     "description": "The page title that will be displayed by the browser.",
-    "section": "Design",
-    "required": false
-  },
-  {
-    "name": "logo",
-    "type": "image",
-    "label": "Logo",
-    "description": "The logo to display in the upper left of the page.",
-    "section": "Design",
-    "required": false
-  },
-  {
-    "name": "favicon",
-    "type": "image",
-    "label": "Favicon",
-    "description": "The page favicon image. Providing a square image is highly recommended; images that are not square will automatically be cropped square. For maximum compatibility, the image you provide should be no larger than 196 x 196 pixels.",
-    "section": "Design",
     "required": false
   }
 ]

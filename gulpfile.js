@@ -35,11 +35,11 @@ gulp.task("concat-css-libraries", function () {
 });
 
 gulp.task('less-base', function () {
-    return gulp.src('./src/css/less/base/base.less')
+    return gulp.src('./less/style.less')
       .pipe(less({
           paths: [__dirname]
       }))
-      .pipe(gulp.dest('./dist/css'));
+      .pipe(gulp.dest('./less/'));
 });
 
 gulp.task("compress", function () {
@@ -74,12 +74,16 @@ gulp.task('copy-settings', function (done) {
         account_id = process.argv[i + 1];
     }
 
-    var api_host = "api.comecero.com", i = process.argv.indexOf("--api_host");
-    if (i > -1) {
-        api_host = process.argv[i + 1];
+    var api_host = "api.comecero.com", x = process.argv.indexOf("--api_host");
+    if (x > -1) {
+        api_host = process.argv[x + 1];
     }
 
     fs.readFile("./settings/account-SAMPLE.js", "utf-8", function (err, data) {
+
+        // Remove the comments from the top of the file
+        data = removeHeaderLines(data, 2);
+
         data = data.replace("AA0000", account_id);
         data = data.replace("api.comecero.com", api_host);
         fs.writeFile("./settings/account.js", data, 'utf8', function (err) {
@@ -90,6 +94,10 @@ gulp.task('copy-settings', function (done) {
     });
 
     fs.readFile("./settings/app-SAMPLE.js", "utf-8", function (err, data) {
+
+        // Remove the comments from the top of the file
+        data = removeHeaderLines(data, 2);
+
         data = data.replace("AA0000", account_id);
         data = data.replace("api.comecero.com", api_host);
         fs.writeFile("./settings/app.js", data, 'utf8', function (err) {
@@ -99,18 +107,26 @@ gulp.task('copy-settings', function (done) {
         });
     });
 
-    // Uncomment when you add support for custom styles.
-    //fs.readFile("./settings/style-SAMPLE.js", "utf-8", function (err, data) {
-    //    data = data.replace("AA0000", account_id);
-    //    data = data.replace("api.comecero.com", api_host);
-    //    fs.writeFile("./settings/style.js", data, 'utf8', function (err) {
-    //        if (err) {
-    //            return console.log(err);
-    //        }
-    //    });
-    //});
+    fs.readFile("./settings/style-SAMPLE.js", "utf-8", function (err, data) {
 
-    gulp.src("./settings/script-SAMPLE.js").pipe(rename("script.js")).pipe(gulp.dest("./settings/"));
-    gulp.src("./settings/style-SAMPLE.css").pipe(rename("style.css")).pipe(gulp.dest("./settings/"));
+        // Remove the comments from the top of the file
+        data = removeHeaderLines(data, 3);
+
+        data = data.replace("AA0000", account_id);
+        data = data.replace("api.comecero.com", api_host);
+        fs.writeFile("./settings/style.js", data, 'utf8', function (err) {
+            if (err) {
+                return console.log(err);
+            }
+        });
+    });
 
 });
+
+function removeHeaderLines(text, numberOfLines) {
+    if (text) {
+        var lines = text.split('\n');
+        lines.splice(0, numberOfLines);
+        return lines.join('\n');
+    }
+}

@@ -90,6 +90,8 @@
                 <span ng-if="invoice.payment_status == 'refunded'"><i class="icon fa fa-undo text-warning"></i> <span translate>Refunded</span></span>
                 <span ng-if="invoice.payment_status == 'failed'"><i class="icon fa fa-times-circle text-danger"></i> <span translate>Failed</span></span>
                 <span ng-if="invoice.payment_status == 'cancelled'"><i class="icon fa fa-ban text-danger"></i> <span translate>Cancelled</span></span>
+                <span ng-if="invoice.payment_status == 'retry'"><i class="icon fa fa-undo fa-flip-horizontal text-warning"></i> <span translate>Retry</span></span>
+                <span ng-if="invoice.payment_status == 'initiated'"><i class="icon fa fa-sign-in text-primary"></i> <span translate>Initiated</span></span>
             </div>
         </div>
 
@@ -127,5 +129,5 @@
 
 <!-- Show a "not found" message if no invoices were found  -->
 <div class="col-sm-12" ng-if="list.data.length == 0">
-    <p class="no-info" translate>No invoices found</p>
+    <p class="no-info" translate>No orders found</p>
 </div>

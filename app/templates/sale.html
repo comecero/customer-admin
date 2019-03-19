@@ -18,7 +18,6 @@
             <div class="col-xs-5 hidden-sm hidden-md hidden-lg lbl"><label translate>Item</label></div>
             <div class="col-xs-7 col-sm-12 col-md-12 text-right-xs value">
                 {{item.name}}
-                <span ng-if="item.subscription">&nbsp;<a href="#/subscriptions/{{item.subscription.subscription_id}}" title="{{'Subscription Details' | translate}}"><i class="fa fa-refresh text-success"></i></a></span>
             </div>
         </div>
 
@@ -48,6 +47,11 @@
 
         <div class="col-xs-12 padding-l15 padding-r15 padding-t0" ng-if="item.license">
             <div style="border:1px solid #eee; padding:10px; border-radius: 4px;" ng-bind-html="item.license.renderedHtml"></div>
+        </div>
+
+        <div class="col-xs-12 padding-l15" ng-if="item.subscription_terms">
+            <span class="btn btn-info spacer-t5"><i class="fa fa-refresh"></i> <a ng-href="#/subscriptions/{{item.subscription.subscription_id}}" style="color: #fff"><span translate>Subscription Details</span></a></span>
+            <p class="help-text">{{item.subscription_terms.description}}</p>
         </div>
 
     </div>

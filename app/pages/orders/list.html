@@ -11,6 +11,6 @@
     </div>
 
     <div class="panel panel-body light-shadow">
-        <div object-list type="order" url="{{resources.orderListUrl}}" template-url="app/templates/orderList.html" embedded="false" page="cursor" error="exception.error"></div>
+        <div object-list type="order" url="{{resources.orderListUrl}}" template-url="app/templates/orderList.html" embedded="false" page="offset" error="exception.error" functions="functions" limit="10"></div>
     </div>
 </div>

@@ -499,7 +499,7 @@ app.directive('objectList', ['ApiService', '$location', function (ApiService, $l
             if (!scope.params) {
 
                 if (attrs.type == "order") {
-                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency";
+                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency,items.name";
                     default_sort = "date_created";
                 }
                 if (attrs.type == "subscription") {

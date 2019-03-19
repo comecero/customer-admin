@@ -11,7 +11,5 @@
         <a id="top" href="#/payment_methods/add" class="btn btn-primary btn-right" resource="payment_methods" method="create"><span class="hidden-xs" translate>Add New</span><span class="hidden-sm hidden-md hidden-lg"><i class="fa fa-plus"></i></span></a>
     </div>
 
-    <div>
         <div object-list type="paymentMethod" url="{{resources.paymentMethodListUrl}}" template-url="app/templates/paymentMethodList.html" embedded="false" page="cursor" error="exception.error"></div>
-    </div>
 </div>

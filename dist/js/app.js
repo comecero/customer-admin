@@ -133,21 +133,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
 
-    // Define the API and auth hosts
-    var apiHost = "api.comecero.com";
-    $rootScope.apiHost = apiHost;
-
-    var authHost = "signin.comecero.com"; // Just the default, uncommon that this would be actually used.
-    if (localStorage.getItem("alias") != null) {
-        var authHost = localStorage.getItem("alias") + ".auth.comecero.com";
-
-        if (window.location.hostname.indexOf("admin-staging.") > -1) {
-            authHost = localStorage.getItem("alias") + ".auth-staging.comecero.com";
-        }
-
-    }
-    $rootScope.authHost = authHost;
-
     // Define default language
     var language = "en";
 
@@ -203,7 +188,7 @@ app.controller("IndexController", ['$scope', 'SettingsService', function ($scope
 
     var settings = SettingsService.get();
     $scope.title = settings.app.page_title || "Account Management";
-    $scope.logo = settings.app.logo_medium;
+    $scope.logo = settings.style.logo_medium;
     $scope.company_name = settings.app.company_name || settings.account.company_name;
     $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
 
@@ -2477,7 +2462,7 @@ app.directive('objectList', ['ApiService', '$location', function (ApiService, $l
             if (!scope.params) {
 
                 if (attrs.type == "order") {
-                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency";
+                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency,items.name";
                     default_sort = "date_created";
                 }
                 if (attrs.type == "subscription") {
@@ -3615,8 +3600,22 @@ app.service("SettingsService", ['$rootScope', "$q", "ApiService", function ($roo
             return appSettings;
         }
 
+        // Get style settings
+        var getStyleSettings = function () {
+
+            var styleSettings = {};
+
+            if (window.__settings) {
+                if (window.__settings.style) {
+                    styleSettings = window.__settings.style;
+                }
+            }
+
+            return styleSettings;
+        };
+
         // Build and return the settings object
-        var settings = { account: getAccountSettings(), app: getAppSettings(), config: {} };
+        var settings = { account: getAccountSettings(), app: getAppSettings(), style: getStyleSettings(), config: {} };
 
         // Define the api prefix
         settings.config.apiPrefix = "/api/v1";

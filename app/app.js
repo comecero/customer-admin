@@ -133,21 +133,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
 
-    // Define the API and auth hosts
-    var apiHost = "api.comecero.com";
-    $rootScope.apiHost = apiHost;
-
-    var authHost = "signin.comecero.com"; // Just the default, uncommon that this would be actually used.
-    if (localStorage.getItem("alias") != null) {
-        var authHost = localStorage.getItem("alias") + ".auth.comecero.com";
-
-        if (window.location.hostname.indexOf("admin-staging.") > -1) {
-            authHost = localStorage.getItem("alias") + ".auth-staging.comecero.com";
-        }
-
-    }
-    $rootScope.authHost = authHost;
-
     // Define default language
     var language = "en";
 
@@ -203,7 +188,7 @@ app.controller("IndexController", ['$scope', 'SettingsService', function ($scope
 
     var settings = SettingsService.get();
     $scope.title = settings.app.page_title || "Account Management";
-    $scope.logo = settings.app.logo_medium;
+    $scope.logo = settings.style.logo_medium;
     $scope.company_name = settings.app.company_name || settings.account.company_name;
     $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
 

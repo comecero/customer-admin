@@ -108,8 +108,22 @@ app.service("SettingsService", ['$rootScope', "$q", "ApiService", function ($roo
             return appSettings;
         }
 
+        // Get style settings
+        var getStyleSettings = function () {
+
+            var styleSettings = {};
+
+            if (window.__settings) {
+                if (window.__settings.style) {
+                    styleSettings = window.__settings.style;
+                }
+            }
+
+            return styleSettings;
+        };
+
         // Build and return the settings object
-        var settings = { account: getAccountSettings(), app: getAppSettings(), config: {} };
+        var settings = { account: getAccountSettings(), app: getAppSettings(), style: getStyleSettings(), config: {} };
 
         // Define the api prefix
         settings.config.apiPrefix = "/api/v1";
