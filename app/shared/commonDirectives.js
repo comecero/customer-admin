@@ -247,6 +247,7 @@ app.directive('login', ['$uibModal', 'authService', 'ApiService', 'SettingsServi
 
                         // Set the token in storage
                         StorageService.set("token", customer.auth.token);
+                        utils.setCookie("token", customer.auth.token, 86400)
 
                         // Remove the credentials from memory
                         scope.user = {};

@@ -19,7 +19,7 @@
 
         // Remove any existing token in storage
         localStorage.removeItem("token");
-        utils.setCookie("token", "", -60);
+        utils.deleteCookie("token");
 
         var headers = {};
         headers["Content-Type"] = "application/json";

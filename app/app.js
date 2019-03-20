@@ -119,6 +119,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                 if (response.data.error.status === 401) {
                     // Bad login or token, delete it from storage
                     localStorage.removeItem("token");
+                    utils.deleteCookie("token");
                     response.data.error.message = "Your credentials are not valid. Please sign in again.";
                     return ($q.reject(response));
                 }

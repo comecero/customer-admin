@@ -119,6 +119,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                 if (response.data.error.status === 401) {
                     // Bad login or token, delete it from storage
                     localStorage.removeItem("token");
+                    utils.deleteCookie("token");
                     response.data.error.message = "Your credentials are not valid. Please sign in again.";
                     return ($q.reject(response));
                 }
@@ -223,6 +224,10 @@ var utils = (function () {
             }
         }
         return "";
+    }
+
+    function deleteCookie(name) {
+        setCookie(name, "", -60);
     }
 
     function getPageHashParameters() {
@@ -839,6 +844,7 @@ var utils = (function () {
     return {
         setCookie: setCookie,
         getCookie: getCookie,
+        deleteCookie: deleteCookie,
         getPageHashParameters: getPageHashParameters,
         getHashParameters: getHashParameters,
         getPageQueryParameters: getPageQueryParameters,
@@ -1686,7 +1692,7 @@ app.service("ApiService", ['$http', '$q', '$rootScope', function ($http, $q, $ro
 
         // Remove any existing token in storage
         localStorage.removeItem("token");
-        utils.setCookie("token", "", -60);
+        utils.deleteCookie("token");
 
         var headers = {};
         headers["Content-Type"] = "application/json";
@@ -2210,6 +2216,7 @@ app.directive('login', ['$uibModal', 'authService', 'ApiService', 'SettingsServi
 
                         // Set the token in storage
                         StorageService.set("token", customer.auth.token);
+                        utils.setCookie("token", customer.auth.token, 86400)
 
                         // Remove the credentials from memory
                         scope.user = {};
