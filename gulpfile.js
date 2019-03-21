@@ -8,10 +8,17 @@ var less = require("gulp-less");
 var sequence = require("run-sequence");
 var fs = require("fs");
 
-// It is important that you include app.js first, utilities.js second and run.js third. After that, the order is not important.
+// It is important that you include app.js first, utilities.js second. After that, the order is not important.
 gulp.task("concat-angular-app", function () {
-    return gulp.src(["./app/app.js", "./src/js/internal/utilities.js", "./app/run.js", "./src/js/internal/base.js", "./app/shared/*.js", "./src/js/libraries/*.js"])
+    return gulp.src(["./app/app.js", "./src/js/internal/utilities.js", "./src/js/internal/base.js", "./app/shared/*.js", "./src/js/libraries/*.js"])
       .pipe(concat("app.js"))
+      .pipe(gulp.dest("./dist/js/"));
+});
+
+// It is important that you include login.js first, utilities.js second. After that, the order is not important.
+gulp.task("concat-angular-login-app", function () {
+    return gulp.src(["./login/login.js", "./src/js/internal/utilities.js", "./src/js/internal/base.js", "./app/shared/*.js", "./src/js/libraries/*.js"])
+      .pipe(concat("login.js"))
       .pipe(gulp.dest("./dist/js/"));
 });
 
@@ -52,7 +59,7 @@ gulp.task("compress", function () {
 });
 
 gulp.task('dist', function (done) {
-    sequence('concat-angular-app', 'concat-angular-utils', 'concat-angular-pages', 'less-base', 'concat-css-libraries', 'compress', function () {
+    sequence('concat-angular-app', 'concat-angular-login-app', 'concat-angular-utils', 'concat-angular-pages', 'less-base', 'concat-css-libraries', 'compress', function () {
         done();
     });
 });

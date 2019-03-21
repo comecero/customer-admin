@@ -1,4 +1,11 @@
-var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'http-auth-interceptor', 'gettext', 'tmh.dynamicLocale', 'colorpicker.module', 'ngSanitize']);
+// If not cookie, redirect to the login now.
+function getCookieValue(o) { var e = document.cookie.match("(^|[^;]+)\\s*" + o + "\\s*=\\s*([^;]+)"); return e ? e.pop() : "" }
+var cookie = getCookieValue("token");
+if (!getCookieValue("token")) {
+    window.location.href = "login";
+}
+
+var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'gettext', 'tmh.dynamicLocale', 'ngSanitize']);
 
 app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $locationProvider, $provide, cfpLoadingBarProvider, tmhDynamicLocaleProvider, $sceDelegateProvider) {
 
@@ -13,11 +20,11 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     cfpLoadingBarProvider.includeSpinner = false;
 
     // Set the favicon
-    if (window.__settings.app.favicon_full) {
+    if (window.__settings.style.favicon_full) {
         var favicon = document.createElement("link");
         favicon.setAttribute("rel", "icon");
         favicon.setAttribute("type", "image/x-icon");
-        favicon.setAttribute("href", window.__settings.app.favicon_full);
+        favicon.setAttribute("href", window.__settings.style.favicon_full);
         document.head.appendChild(favicon);
     }
 
@@ -38,8 +45,10 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     $routeProvider.when("/orders/:id", { templateUrl: "app/pages/orders/view.html", reloadOnSearch: false });
 
     // Refunds
-    $routeProvider.when("/refunds", { templateUrl: "app/pages/refunds/list.html", reloadOnSearch: false });
     $routeProvider.when("/refunds/:id", { templateUrl: "app/pages/refunds/view.html", reloadOnSearch: true });
+
+    // Payments
+    $routeProvider.when("/payments/:id", { templateUrl: "app/pages/payments/view.html", reloadOnSearch: false });
 
     // Subscriptions
     $routeProvider.when("/subscriptions", { templateUrl: "app/pages/subscriptions/list.html", reloadOnSearch: false });
@@ -51,7 +60,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
     // Invoices
     $routeProvider.when("/invoices", { templateUrl: "app/pages/invoices/list.html", reloadOnSearch: false });
-    $routeProvider.when("/invoices/add", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
     $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
     // Payment Methods
@@ -79,13 +87,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
                 // Append the current bearer if not already in the request. This is useful on replays of requests that occured after a login timeout.
                 if (config.isApi == true) {
-
-                    var token = localStorage.getItem("token");
-                    if (!token) {
-                        token = utils.getCookie("token");
-                        localStorage.setItem("token", token);
-                    }
-
+                    var token = utils.getCookie("token");
                     if (token) {
                         config.headers.Authorization = "Bearer " + token;
                     }
@@ -117,10 +119,14 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                 }
 
                 if (response.data.error.status === 401) {
-                    // Bad login or token, delete it from storage
-                    localStorage.removeItem("token");
+
+                    // Token is either empty, bad, or expired. Delete and redirect to login.
                     utils.deleteCookie("token");
-                    response.data.error.message = "Your credentials are not valid. Please sign in again.";
+                    localStorage.clear();
+
+                    // Redirect to the login page
+                    window.location.href = "login";
+
                     return ($q.reject(response));
                 }
 
@@ -132,10 +138,13 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 }]);
 
-app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', 'LanguageService', 'StorageService', '$http', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService, LanguageService, StorageService, $http) {
 
     // Define default language
     var language = "en";
+
+    // Get the settings
+    var settings = SettingsService.get();
 
     // The default language does not need to be loaded (English - it's embedded in the HTML).
     if (localStorage.getItem("language") != null) {
@@ -159,8 +168,8 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
         var defer = $q.defer();
         var promises = [];
 
-        if (localStorage.getItem("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", SettingsService.get()), null, true, localStorage.getItem("token")));
+        if (utils.getCookie("token")) {
+            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", settings), null, true, utils.getCookie("token")));
         }
 
         if (promises.length > 0) {
@@ -174,13 +183,22 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
             complete();
         }
 
-        var complete = function () {
+        function complete() {
             localStorage.clear();
-            // TO_DO define destination
-            window.location.href = "https://example.com";
+            utils.deleteCookie("token");
+            StorageService.remove("token");
+            window.location.href = "login";
         }
 
     }
+
+    // Enable CORS when running in development environments.
+    if (settings.config.development) {
+        $http.defaults.useXDomain = true;
+    }
+
+    // Establish the app language
+    LanguageService.establishLanguage();
 
 }]);
 

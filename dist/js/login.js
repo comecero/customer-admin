@@ -1,13 +1,6 @@
-// If not cookie, redirect to the login now.
-function getCookieValue(o) { var e = document.cookie.match("(^|[^;]+)\\s*" + o + "\\s*=\\s*([^;]+)"); return e ? e.pop() : "" }
-var cookie = getCookieValue("token");
-if (!getCookieValue("token")) {
-    window.location.href = "login";
-}
-
 var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'gettext', 'tmh.dynamicLocale', 'ngSanitize']);
 
-app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $locationProvider, $provide, cfpLoadingBarProvider, tmhDynamicLocaleProvider, $sceDelegateProvider) {
+app.config(['$httpProvider', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider', function ($httpProvider, cfpLoadingBarProvider, tmhDynamicLocaleProvider) {
 
     // Allow CORS
     $httpProvider.defaults.useXDomain = true;
@@ -31,72 +24,11 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     // Dynamically load locale files
     tmhDynamicLocaleProvider.localeLocationPattern("https://static.comecero.com/libraries/angularjs/1.5.5/i18n/angular-locale_{{locale}}.js");
 
-    // Routes
-
-    // Getting Started
-    $routeProvider.when("/", { templateUrl: "app/pages/getting_started/index.html", reloadOnSearch: false });
-
-    // Shipments
-    $routeProvider.when("/shipments", { templateUrl: "app/pages/shipments/list.html", reloadOnSearch: false });
-    $routeProvider.when("/shipments/:id", { templateUrl: "app/pages/shipments/view.html", reloadOnSearch: false });
-
-    // Orders
-    $routeProvider.when("/orders", { templateUrl: "app/pages/orders/list.html", reloadOnSearch: false });
-    $routeProvider.when("/orders/:id", { templateUrl: "app/pages/orders/view.html", reloadOnSearch: false });
-
-    // Refunds
-    $routeProvider.when("/refunds/:id", { templateUrl: "app/pages/refunds/view.html", reloadOnSearch: true });
-
-    // Payments
-    $routeProvider.when("/payments/:id", { templateUrl: "app/pages/payments/view.html", reloadOnSearch: false });
-
-    // Subscriptions
-    $routeProvider.when("/subscriptions", { templateUrl: "app/pages/subscriptions/list.html", reloadOnSearch: false });
-    $routeProvider.when("/subscriptions/:id", { templateUrl: "app/pages/subscriptions/view.html", reloadOnSearch: true });
-
-    // Carts
-    $routeProvider.when("/carts", { templateUrl: "app/pages/carts/list.html", reloadOnSearch: false });
-    $routeProvider.when("/carts/:id", { templateUrl: "app/pages/carts/view.html", reloadOnSearch: true });
-
-    // Invoices
-    $routeProvider.when("/invoices", { templateUrl: "app/pages/invoices/list.html", reloadOnSearch: false });
-    $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
-
-    // Payment Methods
-    $routeProvider.when("/payment_methods", { templateUrl: "app/pages/payment_methods/list.html", reloadOnSearch: false });
-    $routeProvider.when("/payment_methods/add", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
-    $routeProvider.when("/payment_methods/:id/edit", { templateUrl: "app/pages/payment_methods/set.html", reloadOnSearch: true });
-
-    // Notifications
-    $routeProvider.when("/notifications", { templateUrl: "app/pages/notifications/list.html", reloadOnSearch: false });
-    $routeProvider.when("/notifications/:id", { templateUrl: "app/pages/notifications/view.html", reloadOnSearch: true });
-    $routeProvider.when("/notifications/:id/preview", { templateUrl: "app/pages/notifications/preview.html" });
-
-    // Profile
-    $routeProvider.when("/profile", { templateUrl: "app/pages/profile/view.html", reloadOnSearch: true })
-
-    // Routes End
-
     $httpProvider.interceptors.push(['$q', '$rootScope', function ($q, $rootScope) {
         return {
 
             'request': function (config) {
-
-                // If a call to the apiService endpoint, append the Authorization token
-                config.headers = config.headers || {};
-
-                // Append the current bearer if not already in the request. This is useful on replays of requests that occured after a login timeout.
-                if (config.isApi == true) {
-                    var token = utils.getCookie("token");
-                    if (token) {
-                        config.headers.Authorization = "Bearer " + token;
-                    }
-                }
-
-                if (!config.headers["Content-Type"] && !config.isMultipart) {
-                    config.headers["Content-Type"] = "application/json";
-                }
-
+                config.headers["Content-Type"] = "application/json";
                 return config;
             },
 
@@ -112,39 +44,17 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                     response.data.error.message = "An unknown error occurred. Please try your request again. If the problem persists, please contact support."
                     return ($q.reject(response));
                 }
-
-                if (response.data.error.status === 403) {
-                    response.data.error.message = "You do not have permission to perform the requested action. Please contact an account administrator for assistance.";
-                    return ($q.reject(response));
-                }
-
-                if (response.data.error.status === 401) {
-
-                    // Token is either empty, bad, or expired. Delete and redirect to login.
-                    utils.deleteCookie("token");
-                    localStorage.clear();
-
-                    // Redirect to the login page
-                    window.location.href = "login";
-
-                    return ($q.reject(response));
-                }
-
                 return $q.reject(response);
-
             }
         };
     }]);
 
 }]);
 
-app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', 'LanguageService', 'StorageService', '$http', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService, LanguageService, StorageService, $http) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', 'StorageService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService, StorageService) {
 
     // Define default language
     var language = "en";
-
-    // Get the settings
-    var settings = SettingsService.get();
 
     // The default language does not need to be loaded (English - it's embedded in the HTML).
     if (localStorage.getItem("language") != null) {
@@ -161,49 +71,10 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
     // Pull in the locale settings.
     tmhDynamicLocale.set(utils.getLocale(language));
 
-    // Logout function
-    $rootScope.logout = function () {
-
-        // Delete all tokens in local storage
-        var defer = $q.defer();
-        var promises = [];
-
-        if (utils.getCookie("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", settings), null, true, utils.getCookie("token")));
-        }
-
-        if (promises.length > 0) {
-            $q.all(promises).then(function () {
-                complete();
-            }, function (error) {
-                // You received a response that one of the tokens is no longer valid when you attempted to delete it. It previously expired. Doesn't matter.
-                complete();
-            });
-        } else {
-            complete();
-        }
-
-        function complete() {
-            localStorage.clear();
-            utils.deleteCookie("token");
-            StorageService.remove("token");
-            window.location.href = "login";
-        }
-
-    }
-
-    // Enable CORS when running in development environments.
-    if (settings.config.development) {
-        $http.defaults.useXDomain = true;
-    }
-
-    // Establish the app language
-    LanguageService.establishLanguage();
-
 }]);
 
-// Controllers on the index page
-app.controller("IndexController", ['$scope', 'SettingsService', function ($scope, SettingsService) {
+
+app.controller("LoginController", ['$scope', 'SettingsService', 'ApiService', function ($scope, SettingsService, ApiService) {
 
     var settings = SettingsService.get();
     $scope.title = settings.app.page_title || "Account Management";
@@ -211,10 +82,67 @@ app.controller("IndexController", ['$scope', 'SettingsService', function ($scope
     $scope.company_name = settings.app.company_name || settings.account.company_name;
     $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
 
+    $scope.functions = {};
+    $scope.exception = {};
+    $scope.credentials = {};
+    $scope.accessSent = {};
+
+    var baseUrl = ApiService.buildUrl("/customers", SettingsService.get());
+
+    $scope.functions.login = function () {
+
+        // Reset the error.
+        $scope.exception = {};
+        $scope.accessSent = {};
+        $scope.isLoading = true;
+
+        ApiService.login($scope.credentials, baseUrl + "/login", { expand: "auth", "account_id": settings.account.account_id, "test": settings.app.test }).then(function (data) {
+            $scope.isLoading = false;
+            $scope.credentials = {};
+            utils.deleteCookie("token");
+            utils.setCookie("token", data.auth.token, 86400);
+            window.location.href = "../";
+        }, function (error) {
+            $scope.isLoading = false;
+            $scope.exception.error = error;
+            window.scrollTo(0, 0);
+        });
+    }
+
+    $scope.functions.sendAccess = function () {
+
+        // Reset the error.
+        $scope.exception = {};
+        $scope.accessSent = {};
+        $scope.isLoading = true;
+
+        ApiService.set($scope.credentials, baseUrl + "/send_link", { "account_id": settings.account.account_id, "test": settings.app.test, "app_id": settings.app.app_id, "email": $scope.credentials.email }).then(function (data) {
+            $scope.isLoading = false;
+            $scope.accessSent.message = "Please check your email for instructions on accessing your account.";
+        }, function (error) {
+            $scope.isLoading = false;
+            $scope.exception.error = error;
+            window.scrollTo(0, 0);
+        });
+    }
+
+    $scope.functions.setView = function (view) {
+
+        // Reset the error.
+        $scope.exception = {};
+        $scope.accessSent = {};
+
+        // Reset the input
+        $scope.credentials = {};
+
+        if (view == "access") {
+            $scope.showAccess = true;
+        } else {
+            $scope.showAccess = false;
+        }
+    }
+
 }]);
-
-
-
 var utils = (function () {
 
     // These are general, home-grown javascript functions for common functions used throughout the application.

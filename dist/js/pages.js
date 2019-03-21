@@ -187,6 +187,7 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
     // Set the url for interacting with this item
     $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id, SettingsService.get());
     $scope.resources.shipmentListUrl = $scope.url + "/shipments";
+    $scope.resources.paymentListUrl = $scope.url + "/payments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
     $scope.resources.notificationListUrl = $scope.url + "/notifications";
 
@@ -234,6 +235,36 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
 
 
 
+app.controller("PaymentsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService, SettingsService) {
+
+    $scope.payment = {};
+    $scope.exception = {};
+    $scope.fee_currency = null;
+    $scope.currencyType = "transaction";
+    $scope.resources = {};
+    $scope.data = { refunds: [] };
+    $scope.refundParams = { show: "refund_id,date_created,date_modified,status,success,total,subtotal,currency,shipping,tax" };
+
+    $scope.prefs = {}
+    $scope.prefs.loadRefundDetails = false;
+
+    // Set the url for interacting with this item
+    $scope.url = ApiService.buildUrl("/payments/" + $routeParams.id, SettingsService.get());
+    $scope.resources.notificationListUrl = $scope.url + "/notifications";
+
+    // Set the url for pulling the full refund details
+    $scope.refundListUrl = $scope.url + "/refunds";
+
+    // Load the payment
+    var params = { expand: "customer,payment_method,response_data,gateway,fees,commissions,order,invoice,refunds.items,cart" };
+    ApiService.getItem($scope.url, params).then(function (payment) {
+        $scope.payment = payment;
+    }, function (error) {
+        $scope.exception.error = error;
+        window.scrollTo(0, 0);
+    });
+
+}]);
 app.controller("PaymentMethodsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
@@ -426,6 +457,41 @@ app.controller("CustomersViewCtrl", ['$scope', '$routeParams', '$location', 'Gro
 
 
 
+app.controller("RefundsViewCtrl", ['$scope', '$routeParams', 'ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', function ($scope, $routeParams, ApiService, ConfirmService, GrowlsService, SettingsService) {
+
+    $scope.refund = {};
+    $scope.exception = {};
+    $scope.fee_currency = null;
+    $scope.items = [];
+    $scope.currencyType = "transaction";
+    $scope.resources = {};
+
+    $scope.prefs = {}
+    $scope.prefs.loadRefundDetails = false;
+
+    // Set the url for interacting with this item
+    $scope.url = ApiService.buildUrl("/refunds/" + $routeParams.id, SettingsService.get());
+    $scope.resources.notificationListUrl = $scope.url + "/notifications";
+
+    // Load the refund
+    var params = { expand: "payment,customer,payment_method,gateway,fees,commissions,order,refunds.items" };
+    ApiService.getItem($scope.url, params).then(function (refund) {
+        $scope.refund = refund;
+
+        if (refund.order != null) {
+            $scope.items = refund.order.items;
+        }
+
+    }, function (error) {
+        $scope.exception.error = error;
+        window.scrollTo(0, 0);
+    });
+
+}]);
+
+
+
+
 
 //#region Subscriptions
 
@@ -485,8 +551,23 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
 
 $("document").ready(function () {
 
+    function getCookie(name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(name + "=");
+            if (c_start != -1) {
+                c_start = c_start + name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length;
+                }
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
+    }
+
     // Get the token
-    var token = localStorage.getItem("token");
+    var token = getCookie("token");
 
     // Get the query parameters
     var params = utils.getPageQueryParameters();
@@ -512,20 +593,29 @@ $("document").ready(function () {
 });
 $("document").ready(function () {
 
-    // Get the token
-    var token = localStorage.getItem("token");
-
-    // Define the host
-    var host = "api.comecero.com";
-    if (window.location.hostname.indexOf("-staging.") > -1) {
-        host = "api-staging.comecero.com";
+    function getCookie(name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(name + "=");
+            if (c_start != -1) {
+                c_start = c_start + name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length;
+                }
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
     }
+
+    // Get the token
+    var token = getCookie("token");
 
     // Get the query parameters
     var params = utils.getPageQueryParameters();
 
     // Define the URL
-    var url = "https://" + host + "/api/v1/notifications/" + params["notification_id"] + "?show=body";
+    var url =  "/api/v1/notifications/" + params["notification_id"] + "?show=body";
 
     // Make a request to get the notification body
     if (params["notification_id"]) {

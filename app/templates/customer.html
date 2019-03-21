@@ -3,7 +3,7 @@
     <div class="panel">
         <div class="panel-heading">
             <span class="panel-title" translate>Customer Details</span>
-            <div class="panel-heading-controls">
+            <div class="panel-heading-controls hidden">
                 <a class="btn btn-sm btn-info" ng-show="!edit && allowEdit" ng-click="edit = true" translate>Edit</a>
                 <a class="btn btn-sm btn-default" ng-show="edit && allowEdit" ng-click="cancel()" translate>Cancel</a>
                 <button class="btn btn-sm btn-primary" ng-show="edit" ng-click="save(customerform)" isolate-validation="true" validate-on-submit translate>Save</button>
@@ -18,7 +18,6 @@
                 <span ng-if="customer.phone"><span translate>Phone</span>: {{customer.phone}}<br></span>
                 <span ng-if="customer.tax_number"><span translate>Tax Number</span>: {{customer.tax_number}}<br></span>
                 <span>ID: <a href="#/profile">{{customer.customer_id}}</a><br></span>
-                <span ng-if="customer.tax_exempt"><i class="fa fa-check-circle text-success"></i>&nbsp;<span translate>Tax Exempt</span><br></span>
             </div>
 
             <div ng-show="edit">

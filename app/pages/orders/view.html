@@ -63,10 +63,13 @@
 
                 <div class="panel">
                     <div class="panel-heading">
-                        <span class="panel-title" translate>Payment</span>
+                        <span class="panel-title" translate>Payments</span>
+                        <div class="panel-heading-controls">
+                            <span class="badge badge-danger">{{count.payments}}</span>
+                        </div>
                     </div>
                     <div class="panel-body">
-                        <payment-method payment-method-data="order.payment.payment_method" transaction-id="{{order.payment.payment_id}}" transaction-type="payment"></payment-method>
+                        <div object-list type="payment" url="{{resources.paymentListUrl}}" template-url="app/templates/paymentList.html" embedded="true" page="offset" limit="5" search="false" error="exception.error" count="count.payments" refresh="functions.refresh"></div>
                     </div>
                 </div>
 

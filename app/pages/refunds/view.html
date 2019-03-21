@@ -1,0 +1,85 @@
+﻿<div ng-controller="RefundsViewCtrl" class="content container">
+
+    <div class="callout callout-danger" ng-if="exception.error">
+        <h4 translate>Oops! We had a problem.</h4>
+        <p>{{exception.error.message}}</p>
+        <span class="error-code" ng-if="exception.error.reference">Error code: {{exception.error.reference}}</span>
+    </div>
+
+    <div class="page-header">
+        <h1 translate>Refund</h1>
+    </div>
+
+    <div class="panel light-shadow">
+        <div class="panel-heading">
+            <span class="panel-title text-bg text-bold">{{refund.refund_id}}</span>
+            <div class="panel-heading-controls">
+                <span class="badge badge-success" ng-if="refund.status == 'completed'"><i class="fa fa-check-circle"></i>&nbsp;<span translate>Completed</span></span>
+                <span class="badge badge-pa-purple" ng-if="refund.status == 'pending'"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;<span translate>Pending</span></span>
+                <span class="badge badge-warning" ng-if="refund.status == 'refunded'"><i class="fa fa-undo"></i>&nbsp;&nbsp;<span translate>Refunded</span></span>
+                <span class="badge badge-danger" ng-if="refund.status == 'failed'"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span translate>Failed</span></span>
+                <span class="badge badge-danger" ng-if="refund.status == 'cancelled'"><i class="fa fa-ban"></i>&nbsp;&nbsp;<span translate>Cancelled</span></span>
+            </div>
+        </div>
+        <div class="panel-body">
+
+            <ledger-breakdown currency-type="currencyType" transactions="refund" panel-title="{{'Refund Amounts' | translate}}"></ledger-breakdown>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title" translate>Refund Method</span>
+                </div>
+                <div class="panel-body panel-tight">
+                    <payment-method payment-method-data="refund.payment_method"></payment-method>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title">Refund Details</span>
+                </div>
+
+                <div class="panel-body panel-tight">
+                    <div class="col-xs-12 col-sm-6 panel-tight-row">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Refund ID</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{refund.refund_id}}</div></div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 panel-tight-row">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Status</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section text-capitalize">{{refund.status}}</div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 panel-tight-row">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Created</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section">{{refund.date_created | date:'short'}}</div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 panel-tight-row">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Modified</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section">{{refund.date_modified | date:'short'}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <ledger-breakdown currency-type="currencyType" transactions="refund.payment" panel-title="{{'Payment Amounts' | translate}}" details-url="'/#/payments/' + refund.payment.payment_id" resource="refunds" method="read"></ledger-breakdown>
+
+            <div customer-edit="refund.customer" error="exception.error"></div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <span class="panel-title" translate>Notifications</span>
+                    <div class="panel-heading-controls">
+                        <span class="badge badge-danger">{{count.notifications}}</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div object-list type="notification" url="{{resources.notificationListUrl}}" template-url="app/templates/notificationList.html" embedded="true" page="offset" limit="5" search="false" error="exception.error" count="count.notifications"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+

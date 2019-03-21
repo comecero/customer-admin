@@ -4,6 +4,7 @@ window.__settings = window.__settings || {}; window.__settings.app =
     {
         "account_id": "AA0000",
         "test": true,
+        "app_id": "comecero-customer-admin",
         "development": true,
         "company_name": "My Company Name",
         "page_title": "My Company Customer Management"

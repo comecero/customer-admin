@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html ng-app="admin">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title ng-controller="LoginController" ng-bind="title"></title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <!-- Pull in the app and account settings. These must come before any app bootstrapping. In local development, these are just static files. In the hosted environment, these files are supplied dynamically with "live" settings. -->
+    <script src="../settings/app.js"></script>
+    <script src="../settings/account.js"></script>
+    <script src="../settings/style.js"></script>
+
+    <!-- Angular App -->
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://static.comecero.com/libraries/jquery/2.1.4/jquery.min.js"></script>
+    <script src="../dist/js/login.js"></script>
+
+    <!-- Favicons -->
+    <!--TO_DO add favicon with user settings-->
+    <!-- Styles from CDNs -->
+    <link rel="stylesheet" href="https://static.comecero.com/libraries/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://static.comecero.com/libraries/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Local styles -->
+    <link rel="stylesheet" href="../dist/css/libraries.css" />
+    <link rel="stylesheet" href="../less/style.css">
+
+    <!-- Frameworks from CDNs -->
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-route.min.js"></script>
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-sanitize.min.js"></script>
+
+    <style type="text/css">
+        .login-form, .access-form {
+            width: 340px;
+            margin: 40px auto;
+        }
+
+        .form {
+            margin-bottom: 35px;
+            background: #ffffff;
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        .form-control, .btn {
+            min-height: 42px;
+            border-radius: 2px;
+        }
+
+        .btn {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+
+
+<body class="skin-primary" ng-csp ng-controller="LoginController" style="background-color: #f6f6f6;">
+    <!-- Main Header -->
+    <header class="main-header">
+        <!-- Logo -->
+        <div>
+            <div ng-if="logo">
+                <a href="#/" class="logo hidden-xs">
+                    <span class="logo-lg"><img ng-src="{{logo}}" /></span>
+                </a>
+                <a href="#/" class="logo hidden-sm hidden-md hidden-lg">
+                    <span class="logo-lg text-center"><img ng-src="{{logo}}" /></span>
+                </a>
+            </div>
+            <a href="#/" class="logo" ng-if="!logo">
+                <span class="logo-lg">{{company_name}}</span>
+            </a>
+        </div>
+        <nav class="navbar navbar-static-top hidden-xs" role="navigation"></nav>
+    </header>
+
+    <div class="login-form" ng-show="!showAccess">
+
+        <div class="callout callout-danger" ng-if="exception.error">
+            <p>{{exception.error.message}}</p>
+        </div>
+
+        <h2 class="text-center">Sign in</h2>
+        <div class="form">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" ng-model="credentials.username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" ng-model="credentials.password" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="functions.login()" ng-disabled="isLoading">Sign in</button>
+            </div>
+        </div>
+        <p><a href="#" ng-click="functions.setView('access')" translate>Don't have an account? Get access now.</a></p>
+        <p><a href="#" ng-click="functions.setView('access')" translate>Forgot your username or password?</a></p>
+    </div>
+
+    <div class="access-form" ng-show="showAccess">
+
+        <div class="callout callout-danger" ng-if="exception.error">
+            <p>{{exception.error.message}}</p>
+        </div>
+
+        <div class="callout callout-success" ng-if="accessSent.message">
+            <p>{{accessSent.message}}</p>
+        </div>
+
+        <h2 class="text-center">Get Access</h2>
+        <div class="form">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Email Address" ng-model="credentials.email" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0">
+                <button type="submit" class="btn btn-primary btn-block" ng-click="functions.sendAccess()">Send Instructions</button>
+            </div>
+        </div>
+        <p><a href="#" ng-click="functions.setView('login')" translate>Already have an account? Sign in.</a></p>
+    </div>
+
+    <!-- Main Footer -->
+    <footer class="main-footer" style="margin-left: 0; position: fixed; bottom: 0; width: 100%;">
+        <!-- To the right -->
+        <div class="pull-right">
+            <span>&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
+        </div>
+        &nbsp;
+    </footer>
+</body>
+</html>
+

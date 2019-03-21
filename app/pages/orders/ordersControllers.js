@@ -29,6 +29,7 @@ app.controller("OrdersViewCtrl", ['$scope', '$routeParams', 'ApiService', 'Confi
     // Set the url for interacting with this item
     $scope.url = ApiService.buildUrl("/orders/" + $routeParams.id, SettingsService.get());
     $scope.resources.shipmentListUrl = $scope.url + "/shipments";
+    $scope.resources.paymentListUrl = $scope.url + "/payments";
     $scope.resources.refundListUrl = $scope.url + "/refunds";
     $scope.resources.notificationListUrl = $scope.url + "/notifications";
 

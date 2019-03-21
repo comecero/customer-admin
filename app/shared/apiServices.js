@@ -18,20 +18,20 @@
         }
 
         // Remove any existing token in storage
-        localStorage.removeItem("token");
         utils.deleteCookie("token");
 
         var headers = {};
         headers["Content-Type"] = "application/json";
 
         var request = $http({
-            ignoreLoadingBar: true,
+            ignoreLoadingBar: false,
             method: "post",
             data: angular.toJson(data),
             url: url + "?timezone=UTC",
             params: parameters,
             timeout: 15000,
             isApi: true,
+            isLogin: true,
             ignoreAuthModule: true,
             headers: headers
         });
