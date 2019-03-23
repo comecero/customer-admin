@@ -22,6 +22,13 @@ gulp.task("concat-angular-login-app", function () {
       .pipe(gulp.dest("./dist/js/"));
 });
 
+// It is important that you include getting-started.js first, utilities.js second. After that, the order is not important.
+gulp.task("concat-angular-getting-started-app", function () {
+    return gulp.src(["./getting-started/getting-started.js", "./src/js/internal/utilities.js", "./src/js/internal/base.js", "./app/shared/*.js", "./src/js/libraries/*.js"])
+      .pipe(concat("getting-started.js"))
+      .pipe(gulp.dest("./dist/js/"));
+});
+
 // utilities.js is used on its own in /pages/notifications/preview, so we copy a stand-alone version to dist that will get compressed.
 gulp.task("concat-angular-utils", function () {
     return gulp.src(["./src/js/internal/utilities.js"])
@@ -59,7 +66,7 @@ gulp.task("compress", function () {
 });
 
 gulp.task('dist', function (done) {
-    sequence('concat-angular-app', 'concat-angular-login-app', 'concat-angular-utils', 'concat-angular-pages', 'less-base', 'concat-css-libraries', 'compress', function () {
+    sequence('concat-angular-app', 'concat-angular-login-app', 'concat-angular-getting-started-app', 'concat-angular-utils', 'concat-angular-pages', 'less-base', 'concat-css-libraries', 'compress', function () {
         done();
     });
 });

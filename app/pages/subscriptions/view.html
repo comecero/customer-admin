@@ -64,14 +64,19 @@
 
                     <div class="col-xs-12"></div>
 
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Created</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_created | date:'short'}}</div>
+                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_current_period_start">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Period Start</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.date_current_period_start | date:'short'}}</div></div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_current_period_end">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Next Billing Date</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section text-capitalize"><span ng-show="!model.subscription.cancel_at_current_period_end">{{model.subscription.date_current_period_end | date:'short'}}</span></div>
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Modified</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_modified | date:'short'}}</div>
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Created</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_created | date:'short'}}</div>
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_cancelled">
