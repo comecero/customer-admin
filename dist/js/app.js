@@ -5,11 +5,6 @@ if (!getCookieValue("token")) {
     window.location.href = "login";
 }
 
-// If an admin token, redirect to the getting-started page
-if (getCookieValue("token").substring(0, 7) != "limited") {
-    window.location.href = "getting-started";
-}
-
 var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'gettext', 'tmh.dynamicLocale', 'ngSanitize']);
 
 app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $locationProvider, $provide, cfpLoadingBarProvider, tmhDynamicLocaleProvider, $sceDelegateProvider) {
@@ -145,11 +140,21 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', 'LanguageService', 'StorageService', '$http', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService, LanguageService, StorageService, $http) {
 
-    // Define default language
-    var language = "en";
-
     // Get the settings
     var settings = SettingsService.get();
+
+    // Check the token to make sure it's a customer token. If not a customer token, this is likely the result of an admin launch. Redirect to the getting-started page.
+    ApiService.getItem(ApiService.buildUrl("/auths/me", settings), { show: "customer_id" }).then(function (auth) {
+        if (!auth.customer) {
+            window.location.href = "getting-started";
+        }
+    }, function (error) {
+        $scope.exception.error = error;
+        window.location.href = "login";
+    });
+
+    // Define default language
+    var language = "en";
 
     // The default language does not need to be loaded (English - it's embedded in the HTML).
     if (localStorage.getItem("language") != null) {
