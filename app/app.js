@@ -144,7 +144,7 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
     var settings = SettingsService.get();
 
     // Check the token to make sure it's a customer token. If not a customer token, this is likely the result of an admin launch. Redirect to the getting-started page.
-    ApiService.getItem(ApiService.buildUrl("/auths/me", settings), { show: "customer_id" }).then(function (auth) {
+    ApiService.getItem(ApiService.buildUrl("/auths/me", settings), { show: "customer" }).then(function (auth) {
         if (!auth.customer) {
             window.location.href = "getting-started";
         }

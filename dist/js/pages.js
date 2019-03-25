@@ -1,10 +1,3 @@
-app.controller("GettingStartedCtrl", ['$scope', 'SettingsService', function ($scope, SettingsService) {
-
-    // Establish your scope containers
-    var settings = SettingsService.get();
-    $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
-
-}]);
 app.controller("InvoicesListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', 'SettingsService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService, SettingsService) {
 
     // Establish your scope containers
@@ -86,6 +79,13 @@ app.controller("InvoicesSetCtrl", ['$scope', '$routeParams', '$location', 'ApiSe
 
 
 
+app.controller("GettingStartedCtrl", ['$scope', 'SettingsService', function ($scope, SettingsService) {
+
+    // Establish your scope containers
+    var settings = SettingsService.get();
+    $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
+
+}]);
 app.controller("NotificationsListCtrl", ['$scope', '$routeParams', '$location', '$q', 'GrowlsService', 'ApiService', function ($scope, $routeParams, $location, $q, GrowlsService, ApiService) {
 
     // Establish your scope containers
