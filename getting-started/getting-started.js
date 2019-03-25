@@ -78,4 +78,7 @@ app.controller("GettingStartedController", ['$scope', 'SettingsService', 'ApiSer
 
     var settings = SettingsService.get();
 
+    // Get the app url
+    $scope.app_url = window.location.href.split('?')[0].replace("getting-started/", "login");
+
 }]);

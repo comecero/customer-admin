@@ -35,21 +35,50 @@
 </head>
 
 <body>
-    <div class="container" ng-controller="GettingStartedController">
+    <div class="container" style="max-width: 800px;" ng-controller="GettingStartedController">
         <div class="row">
             <div class="col-lg-12">
                 <div class="page-header">
-                    <h1>Using Customer Admin</h1>
+                    <h1>Getting Started with Customer Admin</h1>
                 </div>
             </div>
         </div>
 
-        <p>...</p>
+        <p>Customer Admin allows your customers to view their order, payment and refund history, view and pay invoices, manage subscriptions, payment methods and more.</p>
 
         <div>
-            <h3>...</h3>
+            <h3>Using Customer Admin</h3>
             <hr />
-            <p>...</p>
+            <p>Using Customer Admin is easy. Just send your customers to the link below.</p>
+            <p><div class="well text-center"><strong><a ng-href="{{app_url}}" target="_blank">{{app_url}}</a></strong></div></p>
+            <p>If your customer created a username and password during checkout, they can use those credentials to sign in. If not, they can easily get access by providing the email address from their order, which will allow them to access without the need to create a username and password.</p>
+        </div>
+
+        <div>
+            <h3>Try It Yourself</h3>
+            <hr />
+            <p>To try Customer Admin yourself, just create a test order using an email address you have access to in the customer details. Then, navigate to the Customer Admin and sign in by email (or using your username and password if you created a login during your test order).</p>
+        </div>
+
+        <div>
+            <h3>Customer Admin Features</h3>
+            <hr />
+            <p>Customer Admin allows your customers to access the following:</p>
+            <p>
+                <ul>
+                    <li>View their order history</li>
+                    <li>Download a PDF copy of their receipt</li>
+                    <li>View and update their stored payment methods, including adding new payment methods for future orders</li>
+                    <li>View and manage their subscriptions</li>
+                    <li>View, manage and pay invoices you have sent to them</li>
+                    <li>Update their personal details, including billing, shipping and email addresses</li>
+                    <li>Add or update their username and password</li>
+                    <li>View details of any refunds you have applied to their payments</li>
+                    <li>Resend notifications that have been sent to them by email, such as order confirmations</li>
+                    <li>For digital products, access product licenses or file downloads</li>
+                    <li>And more...</li>
+                </ul>
+            </p>
         </div>
 
     </div>

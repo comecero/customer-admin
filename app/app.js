@@ -1,8 +1,13 @@
-// If not cookie, redirect to the login now.
+// If no token, redirect to the login now.
 function getCookieValue(o) { var e = document.cookie.match("(^|[^;]+)\\s*" + o + "\\s*=\\s*([^;]+)"); return e ? e.pop() : "" }
 var cookie = getCookieValue("token");
 if (!getCookieValue("token")) {
     window.location.href = "login";
+}
+
+// If an admin token, redirect to the getting-started page
+if (getCookieValue("token").substring(0, 7) != "limited") {
+    window.location.href = "getting-started";
 }
 
 var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'gettext', 'tmh.dynamicLocale', 'ngSanitize']);
