@@ -293,12 +293,11 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     function removeChanges(item) {
 
         // Make a copy of the item
-        var updateItem = { change_at_current_period_end: null }
         var params = { expand: expandItem, formatted: true };
 
-        var url = $scope.url + "/items/" + item.item_id;
+        var url = $scope.url + "/items/" + item.item_id + "/change_at_current_period_end";
 
-        ApiService.set(updateItem, url, params).then(function (i) {
+        ApiService.remove(url, params).then(function (i) {
             item = i;
             setPendingChanges(i.subscription);
             $scope.model.subscription = i.subscription;

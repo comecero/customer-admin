@@ -579,17 +579,6 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
         });
     }
 
-    $scope.showHistory = function () {
-
-        ApiService.getItem($scope.model.subscription.history, { formatted: true }).then(function (history) {
-            $scope.model.history = history;
-
-        }, function (error) {
-            $scope.exception.error = error;
-            window.scrollTo(0, 0);
-        });
-    }
-
     $scope.setEdit = function (item) {
 
         $scope.edit = true;
@@ -756,20 +745,6 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
         }
     }, true);
 
-    function fastForward() {
-
-        ApiService.set(null, $scope.url + "/fast_forward", { expand: expand, formatted: true }).then(function (s) {
-            GrowlsService.addGrowl({ id: "action_success", type: "success" });
-            setPendingChanges(s);
-            $scope.model.subscription = s;
-        },
-        function (error) {
-            window.scrollTo(0, 0);
-            $scope.exception.error = error;
-        });
-
-    }
-
     function setPendingChanges(subscription) {
 
         _.each(subscription.items, function (item) {
@@ -812,12 +787,11 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
     function removeChanges(item) {
 
         // Make a copy of the item
-        var updateItem = { change_at_current_period_end: null }
         var params = { expand: expandItem, formatted: true };
 
-        var url = $scope.url + "/items/" + item.item_id;
+        var url = $scope.url + "/items/" + item.item_id + "/change_at_current_period_end";
 
-        ApiService.set(updateItem, url, params).then(function (i) {
+        ApiService.remove(url, params).then(function (i) {
             item = i;
             setPendingChanges(i.subscription);
             $scope.model.subscription = i.subscription;
