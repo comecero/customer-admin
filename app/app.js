@@ -113,11 +113,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                     return ($q.reject(response));
                 }
 
-                if (response.data.error.status === 403) {
-                    response.data.error.message = "You do not have permission to perform the requested action. Please contact an account administrator for assistance.";
-                    return ($q.reject(response));
-                }
-
                 if (response.data.error.status === 401) {
 
                     // Token is either empty, bad, or expired. Delete and redirect to login.

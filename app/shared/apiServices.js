@@ -232,13 +232,6 @@
         // Most calls will return a formatted error message unless something unexpected happens. Pass the error object through if present, or create one that has the same properties if not.
         if (response.data.error) {
 
-            if (response.data.error.status == 403) {
-                error.code = "error";
-                error.message = "It appears that you don't have permissions to access page or function you have requested. If you feel this is incorrect, please contact an account administrator.";
-                error.status = response.status;
-                return ($q.reject(error));
-            }
-
             return ($q.reject(response.data.error));
 
         } else {

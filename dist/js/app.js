@@ -113,11 +113,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                     return ($q.reject(response));
                 }
 
-                if (response.data.error.status === 403) {
-                    response.data.error.message = "You do not have permission to perform the requested action. Please contact an account administrator for assistance.";
-                    return ($q.reject(response));
-                }
-
                 if (response.data.error.status === 401) {
 
                     // Token is either empty, bad, or expired. Delete and redirect to login.
@@ -1917,13 +1912,6 @@ app.service("ApiService", ['$http', '$q', '$rootScope', function ($http, $q, $ro
         // Most calls will return a formatted error message unless something unexpected happens. Pass the error object through if present, or create one that has the same properties if not.
         if (response.data.error) {
 
-            if (response.data.error.status == 403) {
-                error.code = "error";
-                error.message = "It appears that you don't have permissions to access page or function you have requested. If you feel this is incorrect, please contact an account administrator.";
-                error.status = response.status;
-                return ($q.reject(error));
-            }
-
             return ($q.reject(response.data.error));
 
         } else {
@@ -2273,12 +2261,106 @@ app.directive('cancelSubscription', ['ApiService', 'ConfirmService', 'GrowlsServ
                     }
 
                     // Cancel the subscription
-                    ApiService.set(request, scope.subscription.url + "/cancel", { expand: "subscription_plan,customer,product" })
+                    ApiService.set(request, scope.subscription.url + "/cancel", { expand: "subscription_plan,customer.payment_methods,items.subscription_terms,items.subscription_plan,items.product" })
                     .then(
                     function (subscription) {
                         scope.subscription = subscription;
                         subscriptionModal.dismiss();
                         GrowlsService.addGrowl({ id: "subscription_cancel_success", type: "success" });
+                    },
+                    function (error) {
+                        window.scrollTo(0, 0);
+                        scope.modalError = error;
+                    });
+                }
+
+                scope.subscription_cancel.cancel = function () {
+                    subscriptionModal.dismiss();
+                };
+
+            });
+        }
+    };
+}]);
+
+
+app.directive('cancelSubscriptionItem', ['ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', '$uibModal', function (ApiService, ConfirmService, GrowlsService, SettingsService, $uibModal) {
+    return {
+        restrict: 'A',
+        scope: {
+            subscription: '=?',
+            item: '=?'
+        },
+        link: function (scope, elem, attrs, ctrl) {
+
+            // Hide by default
+            elem.hide();
+
+            // Watch to see if you should show or hide the button
+            scope.$watch('item', function () {
+                if (scope.item) {
+                    if (scope.item.cancelled == false && scope.item.cancel_at_current_period_end == false) {
+                        elem.show();
+                    } else {
+                        elem.hide();
+                    }
+                }
+            }, true);
+
+            elem.click(function () {
+
+                // Set defaults
+                scope.subscription_cancel = {};
+                scope.subscription_cancel.request = {};
+                scope.subscription_cancel.request.cancel_at_current_period_end = true;
+                scope.subscription_cancel.request.cancellation_reason = null;
+                scope.cancellation_reasons = [];
+
+                var subscriptionModal = $uibModal.open({
+                    size: "lg",
+                    templateUrl: "app/modals/cancel_subscription_item.html",
+                    scope: scope
+                });
+
+                // Handle when the modal is closed or dismissed
+                subscriptionModal.result.then(function (result) {
+                    // Clear out any error messasges
+                    scope.modalError = null;
+                }, function () {
+                    scope.modalError = null;
+                });
+
+                scope.subscription_cancel.ok = function (form) {
+
+                    // Clear any previous errors
+                    scope.modalError = null;
+
+                    var confirm = { id: "cancel_subscription_item" };
+                    confirm.onConfirm = function () {
+                        execute();
+                    }
+
+                    ConfirmService.showConfirm(scope, confirm);
+
+                };
+
+                var execute = function () {
+
+                    // If cancel at period end is false, set the status to cancelled.
+                    var request = {};
+                    if (scope.subscription_cancel.request.cancel_at_current_period_end == true) {
+                        request.cancel_at_current_period_end = true;
+                    } else {
+                        request.cancel_at_current_period_end = false;
+                    }
+
+                    request.cancellation_reason = scope.subscription_cancel.request.cancellation_reason;
+
+                    // Cancel the subscription item.
+                    ApiService.set(request, scope.item.url + "/cancel", { expand: "subscription.subscription_plan,subscription.customer.payment_methods,subscription.items.subscription_terms,subscription.items.subscription_plan,subscription.items.product", formatted: true }).then(function (item) {
+                        scope.subscription = item.subscription;
+                        subscriptionModal.dismiss();
+                        GrowlsService.addGrowl({ id: "subscription_item_cancel_success", type: "success", name: item.name });
                     },
                     function (error) {
                         window.scrollTo(0, 0);
