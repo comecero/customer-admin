@@ -189,6 +189,15 @@
                     </div>
                 </div>
 
+                <div class="panel" ng-if="invoice.order">
+                    <div class="panel-heading">
+                        <span class="panel-title" translate>Order</span>
+                    </div>
+                    <div class="panel-body">
+                        <div><span translate>Order ID:</span> <a ng-href="#/orders/{{invoice.order.order_id}}">{{invoice.order.order_id}}</a></div>
+                    </div>
+                </div>
+
                 <div class="row"></div>
 
                 <div class="panel" ng-if="invoice.payment_status != 'unpaid'">

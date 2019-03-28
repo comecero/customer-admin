@@ -17,7 +17,7 @@ app.controller("InvoicesSetCtrl", ['$scope', '$routeParams', '$location', 'ApiSe
     $scope.count.refunds = 0;
     $scope.resources = {};
     $scope.currencies = SettingsService.get().account.currencies;
-    $scope.params = { expand: "customer.payment_methods,options,payments.payment_method,items.subscription_terms,subscription", formatted: true };
+    $scope.params = { expand: "customer.payment_methods,options,payments.payment_method,items.subscription_terms,subscription,order", formatted: true };
 
     // Set the url for interacting with this item
     $scope.url = ApiService.buildUrl("/invoices/" + $routeParams.id, SettingsService.get());
