@@ -2973,11 +2973,6 @@ app.directive('showErrors', function () {
                 }
             }
 
-            // Set a placeholder of "Optional" if the input is not required and no other placeholder is present
-            if (!inputNgEl[0].attributes.required && !inputNgEl[0].attributes.conditional && !inputNgEl[0].attributes.placeholder) {
-                inputEl.setAttribute('placeholder', "Optional");
-            }
-
             // Define the action upon which we re-validate
             var action = "blur";
 
@@ -3072,32 +3067,59 @@ app.directive('metaToHtml', function () {
 });
 
 
-app.directive('address', ['GeographiesService', function (GeographiesService) {
+app.directive('address', ['GeographiesService', 'SettingsService', function (GeographiesService, SettingsService) {
     return {
         restrict: 'AE',
         templateUrl: "app/templates/address_display.html",
         scope: {
             address: '=?',
-            edit: '=?'
+            edit: '=?',
+            submitted: '=?'
         },
         link: function (scope, elem, attrs) {
 
             var geo = GeographiesService.getGeographies();
             scope.countries = geo.countries;
 
+            scope.addressType = attrs.addressType;
+
+            scope.isRequiredField = function (field) {
+                var settings = SettingsService.get().account;
+                if (settings.customer_required_fields) {
+                    if (settings.customer_required_fields.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_required_fields.indexOf("full_address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            scope.isEditableField = function (field) {
+                var settings = SettingsService.get().app;
+                if (settings.customer_edit_permissions) {
+                    if (settings.customer_edit_permissions.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_edit_permissions.indexOf("address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         }
     };
 }]);
 
 
-app.directive('customerEdit', ['ApiService', function (ApiService) {
+app.directive('customerEdit', ['ApiService', 'SettingsService', function (ApiService, SettingsService) {
     return {
         restrict: 'AE',
         templateUrl: "app/templates/customer.html",
         scope: {
             customer: '=?customerEdit',
-            cart: '=?',
-            invoice: '=?',
             onSave: '=?',
             error: '=?',
         },
@@ -3116,6 +3138,7 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
 
             var customerCopy = {};
             scope.edit = false;
+            scope.submitted = false;
 
             if (attrs.allowEdit === "false") {
                 scope.allowEdit = false;
@@ -3149,6 +3172,7 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
 
                 // Clear any previous errors
                 scope.error = null;
+                scope.submitted = true;
 
                 if (form.$invalid) {
                     return;
@@ -3203,6 +3227,32 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
                 // Just close the edit.
                 scope.edit = false;
 
+            }
+
+            scope.isRequiredField = function (field) {
+                var settings = SettingsService.get().account;
+                if (settings.customer_required_fields) {
+                    if (settings.customer_required_fields.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_required_fields.indexOf("full_address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            scope.isEditableField = function (field) {
+                var settings = SettingsService.get().app;
+                if (settings.customer_edit_permissions) {
+                    if (settings.customer_edit_permissions.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_edit_permissions.indexOf("address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
         }

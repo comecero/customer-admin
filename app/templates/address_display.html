@@ -9,47 +9,55 @@
 </div>
 
 <div ng-if="edit">
+    <ng-form name="formAddress" novalidate>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.name" name="name" class="form-control" placeholder="{{ 'Name' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('address_1') || address.address_1 || addressType == 'shipping'">
+            <label class="control-label" for="address_1" ng-class="{required: isRequiredField('address_1') && isEditableField('address_1') && addressType == 'billing'}" translate>Address</label>
+            <div ng-class="{ 'has-error': formAddress.address_1.$invalid && (formAddress.address_1.$touched || submitted) }">
+                <input type="text" ng-model="address.address_1" ng-model-options="{ updateOn: 'blur' }" name="address_1" class="form-control" ng-show="isEditableField('address_1')" ng-required="isRequiredField('address_1') && isEditableField('address_1') && addressType == 'billing'">
+                <div style="height: 42px;" ng-show="!isEditableField('address_1')">{{address.address_1}}</div>
+                <p class="help-block fadeInDown" ng-show="formAddress.address_1.$invalid && (formAddress.address_1.$dirty || submitted)" translate>Please provide an address</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.address_1" name="address_1" class="form-control" placeholder="{{ 'Address' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('address_1') || address.address_1 || addressType == 'shipping'">
+            <label class="control-label" for="address_2" translate>Address 2</label>
+            <input type="text" ng-model="address.address_2" name="address_2" class="form-control" ng-show="isEditableField('address_1')">
+            <div style="height: 42px;" ng-show="!isEditableField('address_1')">{{address.address_2}}</div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.address_2" name="address_2" class="form-control" placeholder="{{ 'Address 2' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('city') || address.city || addressType == 'shipping'">
+            <label class="control-label" for="city" ng-class="{required: isRequiredField('city') && isEditableField('city') && addressType == 'billing'}" translate>City</label>
+            <div ng-class="{ 'has-error': formAddress.city.$invalid && (formAddress.city.$touched || submitted) }">
+                <input type="text" ng-model="address.city" ng-model-options="{ updateOn: 'blur' }" name="city" class="form-control" ng-show="isEditableField('city')" ng-required="isRequiredField('city') && isEditableField('city') && addressType == 'billing'">
+                <div style="height: 42px;" ng-show="!isEditableField('city')">{{address.city}}</div>
+                <p class="help-block fadeInDown" ng-show="formAddress.city.$invalid && (formAddress.city.$dirty || submitted)" translate>Please provide a city</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.city" name="city" class="form-control" placeholder="{{ 'City' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('state_prov') || address.state_prov || addressType == 'shipping'">
+            <label class="control-label" for="state_prov" translate>State / Province / Region</label>
+            <input type="text" ng-model="address.state_prov" name="state_prov" class="form-control" ng-show="isEditableField('state_prov')">
+            <div style="height: 42px;" ng-show="!isEditableField('state_prov')">{{address.state_prov}}</div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.state_prov" name="state_prov" class="form-control" placeholder="{{ 'State / Province' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('postal_code') || address.postal_code || addressType == 'shipping'">
+            <label class="control-label" for="postal_code" ng-class="{required: isRequiredField('postal_code') && isEditableField('postal_code') && addressType == 'billing'}" translate>Postal / Zip Code</label>
+            <div ng-class="{ 'has-error': formAddress.postal_code.$invalid && (formAddress.postal_code.$touched || submitted) }">
+                <input type="text" ng-model="address.postal_code" ng-model-options="{ updateOn: 'blur' }" name="postal_code" class="form-control" ng-show="isEditableField('postal_code')" ng-required="isRequiredField('postal_code') && isEditableField('postal_code') && addressType == 'billing'">
+                <div style="height: 42px;" ng-show="!isEditableField('postal_code')">{{address.postal_code}}</div>
+                <p class="help-block fadeInDown" ng-show="formAddress.postal_code.$invalid && (formAddress.postal_code.$dirty || submitted)" translate>Please provide a postal / zip code</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <input type="text" ng-model="address.postal_code" name="postal_code" class="form-control" placeholder="{{ 'Postal Code' | translate}}">
+        <div class="row form-group col-xs-12" ng-show="isEditableField('country') || address.country || addressType == 'shipping'">
+            <label class="control-label" for="country" ng-class="{required: isRequiredField('country') && isEditableField('country') && addressType == 'billing'}" translate>Country</label>
+            <div ng-class="{ 'has-error': formAddress.country.$invalid && (formAddress.country.$touched || submitted) }">
+                <select class="form-control" name="country" ng-model="address.country" ng-options="country.code as country.name for country in countries" ng-show="isEditableField('country')" ng-required="isRequiredField('country') && isEditableField('country') && addressType == 'billing'"></select>
+                <div style="height: 42px;" ng-show="!isEditableField('country')">{{address.country}}</div>
+                <p class="help-block fadeInDown" ng-show="formAddress.country.$invalid && (formAddress.country.$dirty || submitted)" translate>Please provide a postal / zip code</p>
+            </div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <div class="col-xs-12">
-            <select class="form-control" ng-model="address.country" ng-options="country.code as country.name for country in countries"></select>
-        </div>
-    </div>
-
+    </ng-form>
 </div>

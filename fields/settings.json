@@ -14,4 +14,13 @@
     "description": "The page title that will be displayed by the browser.",
     "required": false
   }
+  {
+    "name": "customer_edit_permissions",
+    "type": "array",
+    "label": "Customer Edit Permissions",
+    "description": "Indicates which customer data elements the customer is allowed to edit.",
+    "required": false,
+    "options": [ "name", "company_name", "email", "phone", "address", "tax_number" ],
+    "default": [ "name", "company_name", "email", "phone", "address", "tax_number" ]
+  }
 ]

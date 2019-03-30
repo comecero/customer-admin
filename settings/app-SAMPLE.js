@@ -7,5 +7,6 @@ window.__settings = window.__settings || {}; window.__settings.app =
         "app_id": "comecero-customer-admin",
         "development": true,
         "company_name": "My Company Name",
-        "page_title": "My Company Customer Management"
-    };
+        "page_title": "My Company Customer Management",
+        "customer_edit_permissions": ["name", "company_name", "email", "phone", "address", "tax_number"]
+};
