@@ -13,7 +13,7 @@
     "label": "Page Title",
     "description": "The page title that will be displayed by the browser.",
     "required": false
-  }
+  },
   {
     "name": "customer_edit_permissions",
     "type": "array",
