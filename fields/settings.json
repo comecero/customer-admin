@@ -20,7 +20,32 @@
     "label": "Customer Edit Permissions",
     "description": "Indicates which customer data elements the customer is allowed to edit.",
     "required": false,
-    "options": [ "name", "company_name", "email", "phone", "address", "tax_number" ],
-    "default": [ "name", "company_name", "email", "phone", "address", "tax_number" ]
+    "options": [
+      {
+        "value": "name",
+        "display": "Name"
+      },
+      {
+        "value": "company_name",
+        "display": "Company Name"
+      },
+      {
+        "value": "email",
+        "display": "Email"
+      },
+      {
+        "value": "phone",
+        "display": "Phone"
+      },
+      {
+        "value": "address",
+        "display": "Address"
+      },
+      {
+        "value": "tax_number",
+        "display": "Tax Number"
+      }
+    ],
+    "default_value": [ "name", "company_name", "email", "phone", "address", "tax_number" ]
   }
 ]
