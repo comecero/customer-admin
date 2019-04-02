@@ -22,13 +22,13 @@
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
-.alert a {
+.alert a :not(.btn) {
   color: #fff;
   text-decoration: underline;
 }
-.alert a:hover,
-.alert a:active,
-.alert a:focus {
+.alert a:hover :not(.btn),
+.alert a:active :not(.btn),
+.alert a:focus :not(.btn) {
   color: #fff;
   text-decoration: underline;
 }

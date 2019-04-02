@@ -13,13 +13,17 @@ app.config(['$httpProvider', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider'
     cfpLoadingBarProvider.includeSpinner = false;
 
     // Set the favicon
+    var favicon = document.createElement("link");
+    favicon.setAttribute("rel", "icon");
+    favicon.setAttribute("type", "image/x-icon");
+
     if (window.__settings.style.favicon_full) {
-        var favicon = document.createElement("link");
-        favicon.setAttribute("rel", "icon");
-        favicon.setAttribute("type", "image/x-icon");
         favicon.setAttribute("href", window.__settings.style.favicon_full);
-        document.head.appendChild(favicon);
+    } else {
+        favicon.setAttribute("href", "../images/default_favicon.png");
     }
+
+    document.head.appendChild(favicon);
 
     // Dynamically load locale files
     tmhDynamicLocaleProvider.localeLocationPattern("https://static.comecero.com/libraries/angularjs/1.5.5/i18n/angular-locale_{{locale}}.js");

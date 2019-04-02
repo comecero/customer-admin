@@ -50,19 +50,6 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Plan Name</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section"><div><a href="#/subscription_plans/{{model.subscription.subscription_plan.subscription_plan_id}}/edit">{{model.subscription.subscription_plan.name}}</a></div></div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>In Grace Period?</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">
-                            <span ng-if="model.subscription.in_grace_period" class="text-danger" translate>Yes</span>
-                            <span ng-if="!model.subscription.in_grace_period" translate>No</span>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Billing Interval</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section">
                             <span ng-if="model.subscription.billing_interval_unit == 'minute'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} minutes">{{model.subscription.billing_interval}} minute</span>
@@ -100,26 +87,22 @@
                         <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_created | date:'short'}}</div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Modified</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_modified | date:'short'}}</div>
-                    </div>
-
                     <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_cancelled">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Cancelled</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_cancelled | date:'short'}}</div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.cancellation_reason">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Cancel Reason</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section text-capitalize-first"><div>{{model.subscription.cancellation_reason | replace: '_':' '}}</div></div>
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label>Payment Currency</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.currency}}</div></div>
                     </div>
+                </div>
 
+                <div class="panel-body padding-t5" ng-if="model.subscription.in_grace_period">
+                    <div class="alert alert-danger spacer-b5 text-center">
+                        <div translate>The payment for this subscription renewal has been unsuccessful. Please update your payment method or contact your financial institution to determine the cause of failure. If we are unable to obtain payment, the subscription will be automatically cancelled.</div>
+                        <div class="spacer-t10"><a class="btn btn-default" href="#/payment_methods">Update Payment Method</a></div>
+                    </div>
                 </div>
 
             </div>
