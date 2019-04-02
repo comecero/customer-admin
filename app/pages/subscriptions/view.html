@@ -208,30 +208,6 @@
                 </div>
             </div>
 
-            <div class="panel" resource="customers" method="read">
-                <div class="panel-heading">
-                    <span class="panel-title">Customer</span>
-                </div>
-
-                <div class="panel-body panel-tight">
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Customer ID</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section"><div><a href="#/customers/{{model.subscription.customer.customer_id}}">{{model.subscription.customer.customer_id}}</a></div></div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Name</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section text-capitalize">{{model.subscription.customer.name}}</div>
-                    </div>
-
-                    <div class="col-xs-12 col col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label>Email</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section"><a href="mailto:{{model.subscription.customer.email}}">{{model.subscription.customer.email}}</a></div>
-                    </div>
-
-                </div>
-            </div>
-
             <div class="panel" resource="invoices" method="read">
                 <div class="panel-heading">
                     <span class="panel-title" translate>Invoices</span>
