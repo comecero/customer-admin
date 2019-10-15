@@ -7,6 +7,8 @@
         <p ng-if="confirm.id == 'delete'" translate>Are you sure you want to delete this?</p>
         <p ng-if="confirm.id == 'changes_lost'" translate>Your changes will be lost. Are you sure?</p>
         <p ng-if="confirm.id == 'cancel_subscription'" translate>Are you sure you want to cancel this subscription?</p>
+        <p ng-if="confirm.id == 'cancel_subscription_item'" translate>Are you sure you want to cancel this subscription item?</p>
+        <p ng-if="confirm.id == 'remove_changes'" translate>Are you sure you want to remove these changes?</p>
     </div>
 
     <div class="row"></div>
@@ -32,6 +34,12 @@
         </button>
         <button type="button" ng-if="confirm.id == 'cancel_subscription'" id="modal-confirm-accept" class="btn btn-default" ng-click="confirm.ok()">
             <span translate>Cancel Subscription</span>
+        </button>
+        <button type="button" ng-if="confirm.id == 'cancel_subscription_item'" id="modal-confirm-accept" class="btn btn-default" ng-click="confirm.ok()">
+            <span translate>Cancel Subscription Item</span>
+        </button>
+        <button type="button" ng-if="confirm.id == 'remove_changes'" id="modal-confirm-accept" class="btn btn-default" ng-click="confirm.ok()">
+            <span translate>Remove Changes</span>
         </button>
 
     </div>

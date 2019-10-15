@@ -3,19 +3,7 @@
         <span class="panel-title">{{panelTitle}}</span>
 
         <div class="panel-heading-controls">
-            <div class="btn-group" ng-if="showCurrencies()" uib-dropdown>
-                <button type="button" class="btn btn-default btn-header btn-sm dropdown-toggle" uib-dropdown-toggle>{{selected.currency}}&nbsp;&nbsp;<i class="fa fa-caret-down"></i></button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li class="dropdown-header" translate>Payment Currency</li>
-                    <li ng-click="load('transaction')" ng-class="{ 'selected-li': currencyType == 'transaction' }"><a>{{transaction_currency}}</a></li>
-                    <li class="dropdown-header" translate>Settlement Currency</li>
-                    <li ng-click="load('settlement')" ng-class="{ 'selected-li': currencyType == 'settlement' }"><a>{{settlement_currency}}</a></li>
-                    <li class="dropdown-header" translate>Reporting Currency</li>
-                    <li ng-click="load('reporting')" ng-class="{ 'selected-li': currencyType == 'reporting' }"><a>{{reporting_currency}}</a></li>
-                    <li ng-click="load('reporting_alt')" ng-class="{ 'selected-li': currencyType == 'reporting_alt' }" ng-if="reporting_alt_currency"><a>{{reporting_alt_currency}}</a></li>
-                </ul>
-            </div>
-            <span ng-if="!(showCurrencies())"><strong>{{transaction.currency}}</strong></span>
+            <span><strong>{{transaction_currency}}</strong></span>
         </div>
 
     </div>

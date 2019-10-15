@@ -1,4 +1,11 @@
-var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'http-auth-interceptor', 'gettext', 'tmh.dynamicLocale', 'colorpicker.module', 'ngSanitize']);
+// If no token, redirect to the login now.
+function getCookieValue(o) { var e = document.cookie.match("(^|[^;]+)\\s*" + o + "\\s*=\\s*([^;]+)"); return e ? e.pop() : "" }
+var cookie = getCookieValue("token");
+if (!getCookieValue("token")) {
+    window.location.href = "login";
+}
+
+var app = angular.module("admin", ['ngRoute', 'ngAnimate', 'ngMessages', 'ui.bootstrap', 'angular-loading-bar', 'gettext', 'tmh.dynamicLocale', 'ngSanitize']);
 
 app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 'cfpLoadingBarProvider', 'tmhDynamicLocaleProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $locationProvider, $provide, cfpLoadingBarProvider, tmhDynamicLocaleProvider, $sceDelegateProvider) {
 
@@ -13,13 +20,17 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     cfpLoadingBarProvider.includeSpinner = false;
 
     // Set the favicon
-    if (window.__settings.app.favicon_full) {
-        var favicon = document.createElement("link");
-        favicon.setAttribute("rel", "icon");
-        favicon.setAttribute("type", "image/x-icon");
-        favicon.setAttribute("href", window.__settings.app.favicon_full);
-        document.head.appendChild(favicon);
+    var favicon = document.createElement("link");
+    favicon.setAttribute("rel", "icon");
+    favicon.setAttribute("type", "image/x-icon");
+
+    if (window.__settings.style.favicon_full) {
+        favicon.setAttribute("href", window.__settings.style.favicon_full);
+    } else {
+        favicon.setAttribute("href", "images/default_favicon.png");
     }
+
+    document.head.appendChild(favicon);
 
     // Dynamically load locale files
     tmhDynamicLocaleProvider.localeLocationPattern("https://static.comecero.com/libraries/angularjs/1.5.5/i18n/angular-locale_{{locale}}.js");
@@ -38,8 +49,10 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
     $routeProvider.when("/orders/:id", { templateUrl: "app/pages/orders/view.html", reloadOnSearch: false });
 
     // Refunds
-    $routeProvider.when("/refunds", { templateUrl: "app/pages/refunds/list.html", reloadOnSearch: false });
     $routeProvider.when("/refunds/:id", { templateUrl: "app/pages/refunds/view.html", reloadOnSearch: true });
+
+    // Payments
+    $routeProvider.when("/payments/:id", { templateUrl: "app/pages/payments/view.html", reloadOnSearch: false });
 
     // Subscriptions
     $routeProvider.when("/subscriptions", { templateUrl: "app/pages/subscriptions/list.html", reloadOnSearch: false });
@@ -51,7 +64,6 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
     // Invoices
     $routeProvider.when("/invoices", { templateUrl: "app/pages/invoices/list.html", reloadOnSearch: false });
-    $routeProvider.when("/invoices/add", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
     $routeProvider.when("/invoices/:id", { templateUrl: "app/pages/invoices/set.html", reloadOnSearch: true });
 
     // Payment Methods
@@ -79,7 +91,7 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
                 // Append the current bearer if not already in the request. This is useful on replays of requests that occured after a login timeout.
                 if (config.isApi == true) {
-                    var token = localStorage.getItem("token");
+                    var token = utils.getCookie("token");
                     if (token) {
                         config.headers.Authorization = "Bearer " + token;
                     }
@@ -105,15 +117,15 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
                     return ($q.reject(response));
                 }
 
-                if (response.data.error.status === 403) {
-                    response.data.error.message = "You do not have permission to perform the requested action. Please contact an account administrator for assistance.";
-                    return ($q.reject(response));
-                }
-
                 if (response.data.error.status === 401) {
-                    // Bad login or token, delete it from storage
-                    localStorage.removeItem("token");
-                    response.data.error.message = "Your credentials are not valid. Please sign in again.";
+
+                    // Token is either empty, bad, or expired. Delete and redirect to login.
+                    utils.deleteCookie("token");
+                    localStorage.clear();
+
+                    // Redirect to the login page
+                    window.location.href = "login";
+
                     return ($q.reject(response));
                 }
 
@@ -125,22 +137,20 @@ app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$provide', 
 
 }]);
 
-app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService) {
+app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiService', 'GrowlsService', 'gettextCatalog', 'tmhDynamicLocale', 'SettingsService', 'LanguageService', 'StorageService', '$http', function ($rootScope, $route, $q, $templateCache, $location, ApiService, GrowlsService, gettextCatalog, tmhDynamicLocale, SettingsService, LanguageService, StorageService, $http) {
 
-    // Define the API and auth hosts
-    var apiHost = "api.comecero.com";
-    $rootScope.apiHost = apiHost;
+    // Get the settings
+    var settings = SettingsService.get();
 
-    var authHost = "signin.comecero.com"; // Just the default, uncommon that this would be actually used.
-    if (localStorage.getItem("alias") != null) {
-        var authHost = localStorage.getItem("alias") + ".auth.comecero.com";
-
-        if (window.location.hostname.indexOf("admin-staging.") > -1) {
-            authHost = localStorage.getItem("alias") + ".auth-staging.comecero.com";
+    // Check the token to make sure it's a customer token. If not a customer token, this is likely the result of an admin launch. Redirect to the getting-started page.
+    ApiService.getItem(ApiService.buildUrl("/auths/me", settings), { show: "customer" }).then(function (auth) {
+        if (!auth.customer) {
+            window.location.href = "getting-started";
         }
-
-    }
-    $rootScope.authHost = authHost;
+    }, function (error) {
+        $scope.exception.error = error;
+        window.location.href = "login";
+    });
 
     // Define default language
     var language = "en";
@@ -167,8 +177,8 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
         var defer = $q.defer();
         var promises = [];
 
-        if (localStorage.getItem("token")) {
-            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", SettingsService.get()), null, true, localStorage.getItem("token")));
+        if (utils.getCookie("token")) {
+            promises.push(ApiService.remove(ApiService.buildUrl("/auths/me", settings), null, true, utils.getCookie("token")));
         }
 
         if (promises.length > 0) {
@@ -182,13 +192,22 @@ app.run(['$rootScope', '$route', '$q', '$templateCache', '$location', 'ApiServic
             complete();
         }
 
-        var complete = function () {
+        function complete() {
             localStorage.clear();
-            // TO_DO define destination
-            window.location.href = "https://example.com";
+            utils.deleteCookie("token");
+            StorageService.remove("token");
+            window.location.href = "login";
         }
 
     }
+
+    // Enable CORS when running in development environments.
+    if (settings.config.development) {
+        $http.defaults.useXDomain = true;
+    }
+
+    // Establish the app language
+    LanguageService.establishLanguage();
 
 }]);
 
@@ -197,7 +216,7 @@ app.controller("IndexController", ['$scope', 'SettingsService', function ($scope
 
     var settings = SettingsService.get();
     $scope.title = settings.app.page_title || "Account Management";
-    $scope.logo = settings.app.logo_medium;
+    $scope.logo = settings.style.logo_medium;
     $scope.company_name = settings.app.company_name || settings.account.company_name;
     $scope.helpUrl = settings.account.support_website || "mailto:" + settings.account.support_email;
 

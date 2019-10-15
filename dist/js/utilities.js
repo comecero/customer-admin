@@ -27,6 +27,10 @@ var utils = (function () {
         return "";
     }
 
+    function deleteCookie(name) {
+        setCookie(name, "", -60);
+    }
+
     function getPageHashParameters() {
 
         return getHashParameters(window.location.href);
@@ -641,6 +645,7 @@ var utils = (function () {
     return {
         setCookie: setCookie,
         getCookie: getCookie,
+        deleteCookie: deleteCookie,
         getPageHashParameters: getPageHashParameters,
         getHashParameters: getHashParameters,
         getPageQueryParameters: getPageQueryParameters,

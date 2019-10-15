@@ -14,21 +14,14 @@
         <div class="panel light-shadow">
             <div class="panel-heading" ng-if="!add">
                 <span class="panel-title text-bg text-bold text-capitalize">{{paymentMethod.data.label || paymentMethod.type | removeUnderscore}}</span>
+                <span class="pull-right" ng-if="paymentMethod.type"><img ng-src="images/{{getPaymentImageName(paymentMethod)}}" style="max-height:22px;" /></span>
             </div>
             <div class="panel-body">
                 <div ng-if="paymentMethod.type == 'credit_card' || add">
-
-                    <div class="col-xs-12">
-                        <div class="form-group" show-errors>
-                            <label for="cardholder_name" class="control-label" translate>Label</label>
-                            <input type="text" name="cardholder_name" class="form-control" ng-model="paymentMethod.data.label" />
-                        </div>
-                    </div>
-
                     <div class="col-xs-12" ng-if="add">
                         <div class="form-group" show-errors>
                             <label for="card_number" class="control-label" translate>Card Number</label>
-                            <input type="tel" maxlength="16" name="card_number" class="form-control" ng-model="paymentMethod.data.number" required />
+                            <input type="tel" maxlength="25" name="card_number" class="form-control" ng-model="paymentMethod.data.number" required />
                             <p class="help-block hidden fadeInDown" translate>Please provide valid credit card number</p>
                         </div>
                     </div>
@@ -61,18 +54,23 @@
                     <div class="col-xs-12">
                         <div class="form-group" show-errors>
                             <label for="cardholder_name" class="control-label" translate>Card Holder Name</label>
-                            <input type="text" name="cardholder_name" class="form-control" ng-model="paymentMethod.data.cardholder_name" />
+                            <input type="text" name="cardholder_name" class="form-control" ng-model="paymentMethod.data.cardholder_name" required />
                             <p class="help-block hidden fadeInDown" translate>Please provide card holder name.</p>
                         </div>
                     </div>
-
+                    <div class="col-xs-12" ng-if="!add">
+                        <div class="form-group" show-errors>
+                            <label for="label" class="control-label" translate>Label</label>
+                            <input type="text" name="label" class="form-control" ng-model="paymentMethod.data.label" />
+                        </div>
+                    </div>
                     <div class="col-xs-12">
                         <h3 translate>Billing Address</h3>
                     </div>
                     <div class="col-xs-12">
                         <div class="form-group" show-errors>
                             <label for="address_1" class="control-label" translate>Address 1</label>
-                            <input type="text" name="address_1" class="form-control" ng-model="paymentMethod.data.billing_address.address_1" />
+                            <input type="text" name="address_1" class="form-control" ng-model="paymentMethod.data.billing_address.address_1" required />
                             <p class="help-block hidden fadeInDown" translate>Please provide street name.</p>
                         </div>
                     </div>
@@ -86,7 +84,7 @@
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group" show-errors>
                             <label for="city" class="control-label" translate>City</label>
-                            <input type="text" name="city" class="form-control" ng-model="paymentMethod.data.billing_address.city" />
+                            <input type="text" name="city" class="form-control" ng-model="paymentMethod.data.billing_address.city" required />
                             <p class="help-block hidden fadeInDown" translate>Please provide city.</p>
                         </div>
                     </div>
@@ -101,7 +99,7 @@
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group" show-errors>
                             <label for="postal_code" class="control-label" translate>Postal Code</label>
-                            <input type="tel" name="postal_code" class="form-control" ng-model="paymentMethod.data.billing_address.postal_code" />
+                            <input type="tel" name="postal_code" class="form-control" ng-model="paymentMethod.data.billing_address.postal_code" required />
                             <p class="help-block hidden fadeInDown" translate>Please provide postal code.</p>
                         </div>
                     </div>
@@ -109,7 +107,7 @@
                     <div class="col-xs-12">
                         <div class="form-group" show-errors>
                             <label for="country" class="control-label" translate>Country</label>
-                            <input type="text" class="form-control" name="country" ng-model="paymentMethod.data.billing_address.country" uib-typeahead="country as country.name for country in countries | filter:$viewValue | limitTo:12" typeahead-input-formatter="$model.name" typeahead-editable="false" typeahead-select-on-blur="true" typeahead-on-select="onCountrySelect($item, $model, $label, $event)" />
+                            <select name="country" class="form-control" ng-model="paymentMethod.data.billing_address.country" ng-options="country.code as country.name for country in countries" required></select>
                             <p class="help-block hidden fadeInDown" translate>Please select a country from the list</p>
                         </div>
                     </div>

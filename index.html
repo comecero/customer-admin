@@ -7,51 +7,63 @@
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
+    <!-- Pull in the app and account settings. These must come before any app bootstrapping. In local development, these are just static files. In the hosted environment, these files are supplied dynamically with "live" settings. -->
+    <script src="settings/app.js"></script>
+    <script src="settings/account.js"></script>
+    <script src="settings/style.js"></script>
+
+    <!-- Angular App -->
+    <script src="https://static.comecero.com/libraries/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular.min.js"></script>
+    <script src="dist/js/app.min.js"></script>
+
     <!-- Favicons -->
     <!--TO_DO add favicon with user settings-->
 
     <!-- Styles from CDNs -->
-    <link rel="stylesheet" href="https://static.comecero.com/libraries/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://static.comecero.com/libraries/bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://static.comecero.com/libraries/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Local styles -->
     <link rel="stylesheet" href="dist/css/libraries.css" />
-    <link rel="stylesheet" href="dist/css/base.css">
-
-    <!-- Pull in the app and account settings. These must come before any app bootstrapping. In local development, these are just static files. In the hosted environment, these files are supplied dynamically with "live" settings. -->
-    <script src="settings/app.js"></script>
-    <script src="settings/account.js"></script>
+    <link rel="stylesheet" href="less/style.css">
 
     <!-- Frameworks from CDNs -->
-    <script src="https://static.comecero.com/libraries/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular.min.js"></script>
     <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-route.min.js"></script>
     <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-messages.min.js"></script>
     <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-animate.min.js"></script>
     <script src="https://static.comecero.com/libraries/angularjs/1.5.5/angular-sanitize.min.js"></script>
-
-    <!-- Angular App -->
-    <script src="dist/js/app.js"></script>
   
     <!-- Angular Pages -->
-    <script src="dist/js/pages.js"></script>
+    <script src="dist/js/pages.min.js"></script>
 
 </head>
 
-<body class="hold-transition skin-comecero sidebar-mini" ng-csp>
+<body class="hold-transition skin-primary sidebar-mini" ng-csp>
     <div class="wrapper" id="main-wrapper">
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
 
-            <a href="#/" class="logo hidden-xs" ng-controller="IndexController">
-                <span class="logo-lg"><img ng-src="{{logo}}" style="max-width:100px" /></span>
-            </a>
+            <div ng-controller="IndexController">
+
+                <div ng-if="logo">
+                    <a href="#/" class="logo hidden-xs">
+                        <span class="logo-lg"><img ng-src="{{logo}}" /></span>
+                    </a>
+                    <a href="#/" class="logo hidden-sm hidden-md hidden-lg">
+                        <span class="logo-lg text-center"><img ng-src="{{logo}}" /></span>
+                    </a>
+                </div>
+                <a href="#/" class="logo" ng-if="!logo">
+                    <span class="logo-lg">{{company_name}}</span>
+                </a>
+            </div>
 
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
-                <span class="sidebar-toggle hidden-lg" data-toggle="offcanvas" role="button">
+                <span class="sidebar-toggle hidden-lg hidden-md hidden-sm" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </span>
 
@@ -59,7 +71,7 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         <!-- Language Menu -->
-                        <li class="dropdown" uib-dropdown>
+                        <!--<li class="dropdown" uib-dropdown>
                             <a class="dropdown-toggle user-menu" uib-dropdown-toggle>
                                 <i class="fa fa-globe"></i><span class="hidden-xs">&nbsp;Language</span>&nbsp;&nbsp;<i class="fa fa-caret-down"></i>
                             </a>
@@ -72,7 +84,7 @@
                                 <li><a href="" ng-click="switchLanguage('ru')">Russian</a></li>
                                 <li><a href="">Chinese</a></li>
                             </ul>
-                        </li>
+                        </li>-->
                         <li class="dropdown" uib-dropdown>
                             <a class="dropdown-toggle user-menu" uib-dropdown-toggle>
                                 <span><i class="fa fa-user"></i> <span class="hidden-xs">{{user.user_id}}</span></span>
@@ -111,7 +123,7 @@
         <footer class="main-footer">
             <!-- To the right -->
             <div class="pull-right" ng-controller="IndexController">
-                <span class="hidden-xs">&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
+                <span>&copy; {{company_name}}. </span> <a ng-href="{{helpUrl}}">Contact Us</a>
             </div>
             &nbsp;
         </footer>
@@ -129,7 +141,8 @@
             <i class="icon fa fa-times-circle" ng-if="growl.type == 'danger'"></i>
             &nbsp;
             <!-- Specific -->
-            <span ng-if="growl.id == 'subscription_cancel_success'" translate>You have successfully cancelled the subscription.</span>
+            <span ng-if="growl.id == 'subscription_cancel_success'" translate>Your subscription cancellation request has been processed successfullyn.</span>
+            <span ng-if="growl.id == 'subscription_item_cancel_success'" translate>Your subscription item cancellation request has been processed successfully.</span>
             
             <!-- Generic -->
             <span ng-if="growl.id == 'edit_success_no_link'" translate>Your changes have been saved.</span>
@@ -141,62 +154,7 @@
             <span ng-if="growl.id == 'active_change_failure'" translate>We were unable to update {{growl.name}}. Please try your request again.</span>
             <span ng-if="growl.id == 'invoice_sent'" translate>The invoice has been sent to {{growl.email}}.</span>
             <span ng-if="growl.id == 'credentials_saved'" translate>Your credentials have been saved.</span>
-
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div login></div>
-
-    <!-- Dropzone file upload template -->
-    <div id="dz-file" class="dz-default col-xs-12" style="display:none;">
-        <p><i class="fa fa-cloud-upload fa-4 text-center spacer-t30" style="color:#39b3d7;"></i></p>
-        <p translate>Drop or click to upload</p>
-        <p class="spacer-t30"><small translate>Maximum files: <span class="dropzone-max-files"></span></small></p>
-        <p><small translate>Maximum file size: <span class="dropzone-max-size"></span></small></p>
-    </div>
-
-    <!-- Dropzone app package upload template -->
-    <div id="dz-app-package" class="dz-default" style="display:none;">
-        <p><i class="fa fa-cloud-upload fa-4 text-center spacer-t30" style="color:#39b3d7;"></i></p>
-        <p translate>Drop or click to upload</p>
-        <p class="spacer-t30"><small translate>Maximum files: <span class="dropzone-max-files"></span></small></p>
-        <p><small translate>Maximum file size: <span class="dropzone-max-size"></span></small></p>
-        <p><small translate>Valid file types: <span class="dropzone-filetypes"></span></small></p>
-    </div>
-
-    <!-- Dropzone images upload template -->
-    <div id="dz-images" class="dz-default dz-default-template" style="display:none;">
-        <p><i class="fa fa-cloud-upload fa-4 text-center spacer-t30" style="color:#39b3d7;"></i></p>
-        <p translate>Drop or click to upload</p>
-        <p class="spacer-t30"><small translate>Maximum images: <span class="dropzone-max-files"></span></small></p>
-        <p><small translate>Maximum image size: <span class="dropzone-max-size"></span></small></p>
-        <p><small translate>Valid file types: <span class="dropzone-filetypes"></span></small></p>
-    </div>
-
-    <div id="dz-preview" style="display:none;">
-        <div class="well well-lg text-center">
-
-            <div class="row hidden" id="dz-file-upload-error">
-                <div class="alert alert-danger">
-                    <span id="dz-file-upload-error-message"></span>
-                </div>
-            </div>
-
-            <h1 data-dz-name></h1>
-            <p data-dz-size></p>
-
-            <div class="row progress progress-striped active" id="dz-file-upload-progress"><div class="progress-bar progress-bar-info" id="dz-file-upload-progress-bar" data-dz-uploadprogress></div></div>
-
-            <div class="row">
-                <img src="images/clear.png" id="dz-image-preview" class="img-thumbnail fadeIn hidden" style="height:75px;" />
-            </div>
-
-            <div class="row">
-                <button class="btn btn-info pull-right btn-right btn-margin-left spacer-t30" id="dz-file-upload-button"><i class="fa fa-arrow-circle-up"></i> <span translate>Upload</span></button>
-                <button class="btn btn-danger pull-right btn-right btn-margin-left spacer-t30" id="dz-file-remove-button" data-dz-remove><i class="fa fa-times-circle"></i> <span translate>Remove</span></button>
-                <button class="btn btn-danger pull-right btn-right btn-margin-left spacer-t30 hidden" id="dz-file-delete-button"><i class="fa fa-times-circle"></i> <span translate>Delete</span></button>
-            </div>
+            <span ng-if="growl.id == 'notification_resend'" translate>The notification has been sent to {{growl.email}}.</span>
 
         </div>
     </div>

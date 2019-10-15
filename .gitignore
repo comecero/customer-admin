@@ -5,3 +5,8 @@
 /publish.js
 /node_modules
 *.zip
+/settings/account.js
+/settings/app.js
+/settings/style.js
+/settings/script.js
+/settings/style.css

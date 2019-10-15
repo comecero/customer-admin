@@ -11,6 +11,6 @@
     </div>
 
     <div class="panel panel-body light-shadow">
-        <div object-list type="invoice" url="{{resources.invoiceListUrl}}" template-url="app/templates/invoiceList.html" embedded="false" page="cursor" error="exception.error"></div>
+        <div object-list type="invoice" url="{{resources.invoiceListUrl}}" template-url="app/templates/invoiceList.html" embedded="false" page="offset" error="exception.error" limit="10"></div>
     </div>
 </div>

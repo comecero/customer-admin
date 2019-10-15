@@ -19,10 +19,7 @@
                 <ul class="dropdown-menu">
                     <li ng-click="setParam('status', null)" ng-class="{ 'selected-li': userParams.status == null }"><a><i class="dropdown-icon fa fa-chevron-circle-right text-primary"></i>&nbsp;&nbsp;<span translate>Show All</span></a></li>
                     <li ng-click="setParam('status', 'completed')" ng-class="{ 'selected-li': userParams.status == 'completed' }"><a><i class="dropdown-icon fa fa-check-circle text-success"></i>&nbsp;&nbsp;<span translate>Completed</span></a></li>
-                    <li ng-click="setParam('status', 'pending')" ng-class="{'selected-li': userParams.status == 'pending' }"><a><i class="dropdown-icon fa fa-clock-o text-pa-purple"></i>&nbsp;&nbsp;<span translate>Pending</span></a></li>
                     <li ng-click="setParam('status', 'refunded')" ng-class="{'selected-li': userParams.status == 'refunded' }"><a><i class="dropdown-icon fa fa-undo text-warning"></i>&nbsp;&nbsp;<span translate>Refunded</span></a></li>
-                    <li ng-click="setParam('status', 'failed')" ng-class="{'selected-li': userParams.status == 'failed' }"><a><i class="dropdown-icon fa fa-times-circle text-danger"></i>&nbsp;&nbsp;<span translate>Failed</span></a></li>
-                    <li ng-click="setParam('status', 'cancelled')" ng-class="{'selected-li': userParams.status == 'cancelled' }"><a><i class="dropdown-icon fa fa-ban text-danger"></i>&nbsp;&nbsp;<span translate>Cancelled</span></a></li>
                 </ul>
             </div>
         </div>
@@ -38,10 +35,7 @@
                 <li class="dropdown-header" translate>Status</li>
                 <li ng-click="setParam('status', null)" ng-class="{ 'selected-li': userParams.status == null }"><a><i class="dropdown-icon fa fa-chevron-circle-right text-primary"></i>&nbsp;&nbsp;<span translate>Show All</span></a></li>
                 <li ng-click="setParam('status', 'completed')" ng-class="{ 'selected-li': userParams.status == 'completed' }"><a><i class="dropdown-icon fa fa-check-circle text-success"></i>&nbsp;&nbsp;<span translate>Completed</span></a></li>
-                <li ng-click="setParam('status', 'pending')" ng-class="{'selected-li': userParams.status == 'pending' }"><a><i class="dropdown-icon fa fa-clock-o text-pa-purple"></i>&nbsp;&nbsp;<span translate>Pending</span></a></li>
                 <li ng-click="setParam('status', 'refunded')" ng-class="{'selected-li': userParams.status == 'refunded' }"><a><i class="dropdown-icon fa fa-undo text-undo text-warning"></i>&nbsp;&nbsp;<span translate>Refunded</span></a></li>
-                <li ng-click="setParam('status', 'failed')" ng-class="{'selected-li': userParams.status == 'failed' }"><a><i class="dropdown-icon fa fa-times-circle text-danger"></i>&nbsp;&nbsp;<span translate>Failed</span></a></li>
-                <li ng-click="setParam('status', 'cancelled')" ng-class="{'selected-li': userParams.status == 'cancelled' }"><a><i class="dropdown-icon fa fa-ban text-danger"></i>&nbsp;&nbsp;<span translate>Cancelled</span></a></li>
             </ul>
         </div>
 

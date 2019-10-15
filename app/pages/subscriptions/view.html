@@ -26,19 +26,19 @@
                 <div class="panel-heading">
                     <span class="panel-title">Subscription Details</span>
                     <div class="panel-heading-controls">
-                        <span class="btn btn-danger btn btn-sm spacer-t5" cancel-subscription subscription="model.subscription" ng-show="allowCancel" translate>Cancel Subscription</span>
+                        <span class="btn btn-danger btn btn-sm spacer-t5" cancel-subscription subscription="model.subscription" ng-if="allowCancel" translate>Cancel Subscription</span>
                     </div>
                 </div>
                 <div class="panel-body" ng-if="model.subscription.cancel_at_current_period_end" style="padding-bottom:0px;">
                     <div class="alert alert-warning spacer-b5 text-center">
-                        <div translate>This subscription is scheduled to be cancelled on <strong>{{model.subscription.date_current_period_end | date:'shortDate'}}.</strong>
+                        <div translate>
+                            This subscription is scheduled to be cancelled on <strong>{{model.subscription.date_current_period_end | date:'shortDate'}}.</strong>
                         </div>
                         <div class="spacer-t10"><button class="btn btn-danger" ng-click="uncancel()" translate>Remove Cancellation</button></div>
                     </div>
                 </div>
 
                 <div class="panel-body panel-tight">
-
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label>Subscription ID</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.subscription_id}}</div></div>
@@ -50,40 +50,59 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Billing Period</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.billing_interval_description}}</div>
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Billing Interval</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section">
+                            <span ng-if="model.subscription.billing_interval_unit == 'minute'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} minutes">{{model.subscription.billing_interval}} minute</span>
+                            <span ng-if="model.subscription.billing_interval_unit == 'hour'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} hours">{{model.subscription.billing_interval}} hour</span>
+                            <span ng-if="model.subscription.billing_interval_unit == 'day'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} days">{{model.subscription.billing_interval}} day</span>
+                            <span ng-if="model.subscription.billing_interval_unit == 'month'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} months">{{model.subscription.billing_interval}} month</span>
+                            <span ng-if="model.subscription.billing_interval_unit == 'year'" translate translate-n="model.subscription.billing_interval" translate-plural="{{model.subscription.billing_interval}} years">{{model.subscription.billing_interval}} year</span>
+                        </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-show="model.subscription.trial_interval_unit">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Trial Period</label></div>
+                    <div class="col-xs-12 col-sm-6 panel-tight-row">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Trial Interval</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section">
-                            <span ng-if="model.subscription.trial_interval_unit">{{model.subscription.trial_interval_description}} hour</span>
+                            <span ng-if="model.subscription.trial_interval_unit == 'minute'" translate translate-n="model.subscription.trial_interval" translate-plural="{{model.subscription.trial_interval}} minute">{{model.subscription.trial_interval}} minute</span>
+                            <span ng-if="model.subscription.trial_interval_unit == 'hour'" translate translate-n="model.subscription.trial_interval" translate-plural="{{model.subscription.trial_interval}} hours">{{model.subscription.trial_interval}} hour</span>
+                            <span ng-if="model.subscription.trial_interval_unit == 'day'" translate translate-n="model.subscription.trial_interval" translate-plural="{{model.subscription.trial_interval}} days">{{model.subscription.trial_interval}} day</span>
+                            <span ng-if="model.subscription.trial_interval_unit == 'month'" translate translate-n="model.subscription.trial_interval" translate-plural="{{model.subscription.trial_interval}} months">{{model.subscription.trial_interval}} month</span>
+                            <span ng-if="model.subscription.trial_interval_unit == 'year'" translate translate-n="model.subscription.trial_interval" translate-plural="{{model.subscription.trial_interval}} years">{{model.subscription.trial_interval}} year</span>
                             <span ng-if="!model.subscription.trial_interval_unit" translate>No Trial</span>
                         </div>
                     </div>
 
-                    <div class="col-xs-12"></div>
+                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_current_period_start">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Period Start</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.date_current_period_start | date:'short'}}</div></div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_current_period_end">
+                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Period End</label></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section text-capitalize">{{model.subscription.date_current_period_end | date:'short'}}</div>
+                    </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Created</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_created | date:'short'}}</div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6 panel-tight-row">
-                        <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Modified</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_modified | date:'short'}}</div>
-                    </div>
-
                     <div class="col-xs-12 col-sm-6 panel-tight-row" ng-if="model.subscription.date_cancelled">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label translate>Cancelled</label></div>
-                        <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.date_cancelled | date:'short'}}</div></div>
+                        <div class="col-xs-12 col-md-8 panel-tight-section">{{model.subscription.date_cancelled | date:'short'}}</div>
                     </div>
 
                     <div class="col-xs-12 col-sm-6 panel-tight-row">
                         <div class="col-xs-12 col-md-4 panel-tight-section"><label>Payment Currency</label></div>
                         <div class="col-xs-12 col-md-8 panel-tight-section"><div>{{model.subscription.currency}}</div></div>
                     </div>
+                </div>
 
+                <div class="panel-body padding-t5" ng-if="model.subscription.in_grace_period">
+                    <div class="alert alert-danger spacer-b5 text-center">
+                        <div translate>The payment for this subscription renewal has been unsuccessful. Please update your payment method or contact your financial institution to determine the cause of failure. If we are unable to obtain payment, the subscription will be automatically cancelled.</div>
+                        <div class="spacer-t10"><a class="btn btn-default" href="#/payment_methods">Update Payment Method</a></div>
+                    </div>
                 </div>
 
             </div>
@@ -92,40 +111,98 @@
                 <div class="panel-heading">
                     <span class="panel-title">Items</span>
                 </div>
-
-                <div class="gridtable-header hidden-xs">
-                    <div class="col-sm-6"><label translate>Item</label></div>
-                    <div class="col-sm-2 text-right"><label translate>Quantity</label></div>
-                    <div class="col-sm-2 text-right"><label translate>Price</label></div>
-                    <div class="col-sm-2 text-right"><label translate>Currency</label></div>
-                </div>
-
-                <div class="gridtable-row" ng-repeat="item in model.subscription.items">
-
-                    <div class="col-xs-12 col-sm-6 wide-md">
-                        <div class="col-xs-5 hidden-sm hidden-md hidden-lg lbl"><label translate>Item</label></div>
-                        <div class="col-xs-7 col-sm-12 col-md-12 text-right-xs value">
-                           <span>{{item.name}}</span>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-2 wide-md">
-                        <div class="col-xs-5 hidden-sm hidden-md hidden-lg lbl"><label translate>Quantity</label></div>
-                        <div class="col-xs-7 col-sm-12 text-right value">{{item.quantity}}</div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-2 wide-md">
-                        <div class="col-xs-5 hidden-sm hidden-md hidden-lg lbl"><label translate>Price</label></div>
-                        <div class="col-xs-7 col-sm-12 text-right value">{{item.formatted.reference_price}}</span></div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-2 wide-md">
-                        <div class="col-xs-5 hidden-sm hidden-md hidden-lg lbl"><label translate>Currency</label></div>
-                        <div class="col-xs-7 col-sm-12 text-right value">{{item.reference_currency}}</div>
-                    </div>
-
-                    <div class="col-xs-12">
-                        <div class="col-xs-12 value text-sm"><em>{{item.subscription_terms.description}}</em></div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col-xs-5">Item</th>
+                                    <th scope="col" class="text-right col-xs-1">Quantity</th>
+                                    <th scope="col" class="text-right col-xs-4">Price</th>
+                                    <th scope="col" class="text-right col-xs-2">Currency</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="item in model.subscription.items" ng-class="{'highlight': isEditing(item)}">
+                                <tr ng-if="!isEditing(item)">
+                                    <td><span ng-class="{strike: item.cancelled}">{{item.name}}</span></td>
+                                    <td class="text-right"><span ng-class="{strike: item.cancelled}">{{item.quantity}}</span></td>
+                                    <td class="text-right"><span ng-class="{strike: (item.cancelled || item.reference_discount)}">{{item.formatted.reference_price}}</span><span class="text-danger" ng-if="item.reference_discount"> {{item.formatted.reference_discount_price}}</span></td>
+                                    <td class="text-right"><span ng-class="{strike: item.cancelled}">{{item.reference_currency}}</span></td>
+                                </tr>
+                                <tr class="no-border" ng-if="!isEditing(item)">
+                                    <td colspan="5"><p ng-class="{strike: item.cancelled}" class="help-text">{{item.subscription_terms.description}}</p></td>
+                                </tr>
+                                <tr class="no-border" ng-if="!isEditing(item) && !item.cancelled && !item.cancel_at_current_period_end && !model.subscription.cancel_at_current_period_end && item.change_summary">
+                                    <td colspan="5">
+                                        <div class="well well-sm" style="margin-top:0;">
+                                            <p><i>The following is scheduled to change at the end of the current period:</i></p>
+                                            <ul>
+                                                <li ng-repeat="change in item.change_summary">{{change.name}}: From {{change.from}} to {{change.to}}</li>
+                                            </ul>
+                                            <p class="spacer-t10 text-center"><button class="btn btn-danger btn-sm" ng-click="confirmRemoveChanges(item)" translate>Remove Changes</button></p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="!isEditing(item) && item.cancel_at_current_period_end && !model.subscription.cancel_at_current_period_end">
+                                    <td colspan="5">
+                                        <div class="alert alert-warning spacer-b5 text-center">
+                                            <div translate>
+                                                This item is scheduled to be cancelled on <strong>{{model.subscription.date_current_period_end | date:'shortDate'}}.</strong>
+                                            </div>
+                                            <div class="spacer-t10" ng-if="allowCancel"><button class="btn btn-danger" ng-click="uncancelItem(item)" translate>Remove Item Cancellation</button></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="allowCancel && !isEditing(item) && !item.cancelled && !item.cancel_at_current_period_end">
+                                    <td class="text-right" colspan="5">
+                                        <span class="btn btn-danger btn btn-xs btn-right btn-xs-margin-left" ng-if="allowCancel" cancel-subscription-item subscription="model.subscription" item="item" translate>Cancel Item</span>
+                                        <span class="btn btn-info btn btn-xs btn-right btn-xs-margin-left" ng-if="allowDowngrade || allowUpgrade" ng-click="setEdit(item)" translate>Edit Item</span>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="isEditing(item)" ng-repeat="newItem in change_items">
+                                    <td>
+                                        <div class="radio-group inline">
+                                            <input type="radio" id="item-{{$index}}" class="radio" ng-click="selectItem(newItem)" ng-checked="isSelected(newItem)" value="">
+                                            <label for="item-{{$index}}" class="radio-label">{{newItem.name}}</label>
+                                        </div>
+                                        <p class="help-text"><span class="text-xs">{{newItem.subscription_terms.description}}</span></p>
+                                    </td>
+                                    <td class="text-right"><input type="text" class="form-control text-right" ng-model="newItem.quantity" /></td>
+                                    <td class="text-right"><span ng-class="{strike: newItem.reference_discount}">{{newItem.formatted.reference_price}}</span><span class="text-danger" ng-if="newItem.reference_discount"> {{newItem.formatted.reference_discount_price}}</span></td>
+                                    <td class="text-right"><span>{{newItem.reference_currency}}</span></td>
+                                </tr>
+                                <tr class="no-border" ng-if="isEditing(item) && !preview">
+                                    <td class="text-right" colspan="5">
+                                        <span class="btn btn-info btn btn-xs btn-right btn-xs-margin-left" ng-click="previewChanges(item)" translate>Preview Changes</span>
+                                        <span class="btn btn-default btn btn-xs btn-right btn-xs-margin-left" ng-click="cancelEdit()" translate>Cancel Changes</span>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="isEditing(item) && preview">
+                                    <td colspan="5">
+                                        <p class="help-text">This update will apply the following changes:</p>
+                                        <ul>
+                                            <li ng-if="preview.net_total >= 0"><strong>Payment Due Now</strong>: {{preview.formatted.net_total}} {{preview.currency}}</li>
+                                            <li ng-if="preview.net_total < 0"><strong>Refund Due Now</strong>: {{preview.formatted.net_total}}</li>
+                                            <li><strong>Next Billing Date</strong>: {{preview.date_next_payment | date:'short'}}</li>
+                                        </ul>
+                                        <p class="help-text">{{preview.subscription_terms.description}}</p>
+                                        <p ng-if="preview.generates_new_subscription"><strong>This change will cancel '{{item.name}}' in the current subscription and will generate a new subscription for '{{preview.name}}'.</strong></p>
+                                        <p ng-if="!preview.generates_new_subscription && selected.product_id != item.product_id"><strong>This change will cancel '{{item.name}}' and will add '{{preview.name}}' to the subscription.</strong></p>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="isEditing(item) && preview && preview.apply_at_period_end">
+                                    <td class="text-center" colspan="5">
+                                        <div class="alert alert-info" translate>This change will be scheduled to occur at the end of the current subscription billing period</div>
+                                    </td>
+                                </tr>
+                                <tr class="no-border" ng-if="isEditing(item) && preview">
+                                    <td class="text-right" colspan="5">
+                                        <span class="btn btn-primary btn btn-right btn-xs-margin-left" ng-click="updateItem(item)" translate>Apply Changes</span>
+                                        <span class="btn btn-default btn btn-right btn-xs-margin-left" ng-click="cancelEdit()" translate>Cancel Changes</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>
@@ -133,13 +210,13 @@
 
             <div class="panel" resource="invoices" method="read">
                 <div class="panel-heading">
-                    <span class="panel-title" translate>Billing History</span>
+                    <span class="panel-title" translate>Invoices</span>
                     <div class="panel-heading-controls">
                         <span class="badge badge-danger">{{count.invoices}}</span>
                     </div>
                 </div>
                 <div class="panel-body">
-                    <div object-list type="invoice" url="{{resources.invoiceListUrl}}" template-url="app/templates/invoiceList.html" embedded="true" page="offset" limit="10" search="false" error="exception.error" count="count.invoices"></div>
+                    <div object-list type="invoice" url="{{resources.invoiceListUrl}}" template-url="app/templates/invoiceList.html" embedded="true" page="offset" limit="10" search="true" error="exception.error" count="count.invoices"></div>
                 </div>
             </div>
 

@@ -203,143 +203,6 @@ app.directive('maxLength', ['$timeout', function ($timeout) {
 }]);
 
 
-app.directive('login', ['$uibModal', 'authService', 'ApiService', 'SettingsService', 'StorageService', '$sce', '$rootScope', function ($uibModal, authService, ApiService, SettingsService, StorageService, $sce, $rootScope) {
-    return {
-        restrict: 'A',
-        link: function (scope, elem, attrs, ctrl) {
-
-            scope.$on("event:auth-loginRequired", function (event) {
-
-                if (!scope.user) {
-                    scope.user = {};
-                }
-
-                scope.exception = {};
-
-                // Show the login modal.
-                if (scope.openLogin == null) {
-                    scope.openLogin = $uibModal.open({
-                        size: 'sm',
-                        templateUrl: 'app/modals/login.html',
-                        backdrop: 'static',
-                        keyboard: 'false'
-                    });
-                }
-
-                var setDisabled = function (element, disabled) {
-                    if (disabled) {
-                        element.setAttribute("disabled", "disabled");
-                    } else {
-                        element.removeAttribute("disabled");
-                    }
-                }
-
-                scope.login = function () {
-
-                    // Disable the signin button.
-                    setDisabled(document.getElementById("login"), true);
-
-                    // Attept to log the customer in.
-                    var accountSettings = SettingsService.get().account;
-                    var params = { account_id: accountSettings.account_id, test: accountSettings.test };
-                    var creds = { username: scope.user.username, password: scope.user.password };
-                    ApiService.login(creds, ApiService.buildUrl("/customers/login", SettingsService.get()), params).then(function (customer) {
-
-                        // Set the token in storage
-                        StorageService.set("token", customer.auth.token);
-
-                        // Remove the credentials from memory
-                        scope.user = {};
-
-                        // Tell the http interceptor that the login succeeded so it can re-run the failed HTTP requests.
-                        authService.loginConfirmed();
-
-                        // Broadcast the login event so controllers can respond to it as necessary.
-                        scope.$broadcast("event:loginSuccess");
-
-                        // Close the login modal.
-                        if (scope.openLogin != null) {
-                            scope.openLogin.close();
-                            delete scope.openLogin;
-                        }
-
-                    }, function (error) {
-                        scope.modalError = error;
-                        window.scrollTo(0, 0);
-
-                        // Enabled the signin button.
-                        setDisabled(document.getElementById("login"), false);
-
-                    });
-
-                }
-
-                // Listen for a click / submit of the login details. Send to the API for authorization.
-
-                // On success, add the returned token and user info to the cookie. Close and delete the modal.
-
-                // Broadcast the login event so controllers can respond to it as necessary.
-                // scope.$broadcast("event:loginSuccess");
-
-                // Tell the auth service that it can re-run the previous request for which a failed HTTP (403) was returned
-                // authService.loginConfirmed();
-
-                // On success, show an error.
-
-                // Only show if a modal is not already displayed
-                //if (scope.openLogin == null) {
-                //    scope.openLogin = $uibModal.open({
-                //        size: 'sm',
-                //        templateUrl: '/modals/login.html',
-                //        backdrop: 'static',
-                //        keyboard: 'false'
-                //    });
-
-                //    // Prepare to recieve a message back from the iframe upon successful login.
-                //    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-                //    var eventer = window[eventMethod];
-                //    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-
-                //    // Listen to message from child window
-                //    eventer(messageEvent, function (e) {
-                //        var key = e.message ? "message" : "data";
-                //        var data = e[key];
-
-                //        if (data == "loginSuccess") {
-
-                //            // Close and delete the dialoge if open.
-                //            if (scope.openLogin != null) {
-                //                scope.openLogin.close();
-                //                delete scope.openLogin;
-                //            }
-
-                //            // Broadcast the login event so controllers can respond to it as necessary.
-                //            scope.$broadcast("event:loginSuccess");
-
-                //            // Set the user settings
-                //            SettingsService.setUserSettings();
-
-                //            // Tell the http interceptor that the login succeeded so it can re-run the failed HTTP requests.
-                //            authService.loginConfirmed();
-
-                //        } else {
-                //            // Only in rare cases will this happen - only in a case after a successful login we were unable to properly set the login cookie. Typical login failures are handled within the iFrame.
-                //            // As such, we don't specially handle - the login will fail and the next action the user takes will ask them to login again. This could be updated to provide more explicit help.
-                //            // Broadcast the login event so controllers can respond to it as necessary.
-                //            scope.$broadcast("event:loginFailure");
-                //            delete scope.openLogin;
-                //        }
-
-                //    }, false);
-
-                //}
-
-            });
-        }
-    }
-}]);
-
-
 app.directive('selectOnClick', function () {
     return {
         restrict: 'A',
@@ -429,12 +292,106 @@ app.directive('cancelSubscription', ['ApiService', 'ConfirmService', 'GrowlsServ
                     }
 
                     // Cancel the subscription
-                    ApiService.set(request, scope.subscription.url + "/cancel", { expand: "subscription_plan,customer,product" })
+                    ApiService.set(request, scope.subscription.url + "/cancel", { expand: "subscription_plan,customer.payment_methods,items.subscription_terms,items.subscription_plan,items.product" })
                     .then(
                     function (subscription) {
                         scope.subscription = subscription;
                         subscriptionModal.dismiss();
                         GrowlsService.addGrowl({ id: "subscription_cancel_success", type: "success" });
+                    },
+                    function (error) {
+                        window.scrollTo(0, 0);
+                        scope.modalError = error;
+                    });
+                }
+
+                scope.subscription_cancel.cancel = function () {
+                    subscriptionModal.dismiss();
+                };
+
+            });
+        }
+    };
+}]);
+
+
+app.directive('cancelSubscriptionItem', ['ApiService', 'ConfirmService', 'GrowlsService', 'SettingsService', '$uibModal', function (ApiService, ConfirmService, GrowlsService, SettingsService, $uibModal) {
+    return {
+        restrict: 'A',
+        scope: {
+            subscription: '=?',
+            item: '=?'
+        },
+        link: function (scope, elem, attrs, ctrl) {
+
+            // Hide by default
+            elem.hide();
+
+            // Watch to see if you should show or hide the button
+            scope.$watch('item', function () {
+                if (scope.item) {
+                    if (scope.item.cancelled == false && scope.item.cancel_at_current_period_end == false) {
+                        elem.show();
+                    } else {
+                        elem.hide();
+                    }
+                }
+            }, true);
+
+            elem.click(function () {
+
+                // Set defaults
+                scope.subscription_cancel = {};
+                scope.subscription_cancel.request = {};
+                scope.subscription_cancel.request.cancel_at_current_period_end = true;
+                scope.subscription_cancel.request.cancellation_reason = null;
+                scope.cancellation_reasons = [];
+
+                var subscriptionModal = $uibModal.open({
+                    size: "lg",
+                    templateUrl: "app/modals/cancel_subscription_item.html",
+                    scope: scope
+                });
+
+                // Handle when the modal is closed or dismissed
+                subscriptionModal.result.then(function (result) {
+                    // Clear out any error messasges
+                    scope.modalError = null;
+                }, function () {
+                    scope.modalError = null;
+                });
+
+                scope.subscription_cancel.ok = function (form) {
+
+                    // Clear any previous errors
+                    scope.modalError = null;
+
+                    var confirm = { id: "cancel_subscription_item" };
+                    confirm.onConfirm = function () {
+                        execute();
+                    }
+
+                    ConfirmService.showConfirm(scope, confirm);
+
+                };
+
+                var execute = function () {
+
+                    // If cancel at period end is false, set the status to cancelled.
+                    var request = {};
+                    if (scope.subscription_cancel.request.cancel_at_current_period_end == true) {
+                        request.cancel_at_current_period_end = true;
+                    } else {
+                        request.cancel_at_current_period_end = false;
+                    }
+
+                    request.cancellation_reason = scope.subscription_cancel.request.cancellation_reason;
+
+                    // Cancel the subscription item.
+                    ApiService.set(request, scope.item.url + "/cancel", { expand: "subscription.subscription_plan,subscription.customer.payment_methods,subscription.items.subscription_terms,subscription.items.subscription_plan,subscription.items.product", formatted: true }).then(function (item) {
+                        scope.subscription = item.subscription;
+                        subscriptionModal.dismiss();
+                        GrowlsService.addGrowl({ id: "subscription_item_cancel_success", type: "success", name: item.name });
                     },
                     function (error) {
                         window.scrollTo(0, 0);
@@ -499,7 +456,7 @@ app.directive('objectList', ['ApiService', '$location', function (ApiService, $l
             if (!scope.params) {
 
                 if (attrs.type == "order") {
-                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency";
+                    baseParams.show = "date_created,order_id,fulfilled,total,payment_status,currency,items.name";
                     default_sort = "date_created";
                 }
                 if (attrs.type == "subscription") {
@@ -1185,11 +1142,6 @@ app.directive('showErrors', function () {
                 }
             }
 
-            // Set a placeholder of "Optional" if the input is not required and no other placeholder is present
-            if (!inputNgEl[0].attributes.required && !inputNgEl[0].attributes.conditional && !inputNgEl[0].attributes.placeholder) {
-                inputEl.setAttribute('placeholder', "Optional");
-            }
-
             // Define the action upon which we re-validate
             var action = "blur";
 
@@ -1284,32 +1236,59 @@ app.directive('metaToHtml', function () {
 });
 
 
-app.directive('address', ['GeographiesService', function (GeographiesService) {
+app.directive('address', ['GeographiesService', 'SettingsService', function (GeographiesService, SettingsService) {
     return {
         restrict: 'AE',
         templateUrl: "app/templates/address_display.html",
         scope: {
             address: '=?',
-            edit: '=?'
+            edit: '=?',
+            submitted: '=?'
         },
         link: function (scope, elem, attrs) {
 
             var geo = GeographiesService.getGeographies();
             scope.countries = geo.countries;
 
+            scope.addressType = attrs.addressType;
+
+            scope.isRequiredField = function (field) {
+                var settings = SettingsService.get().account;
+                if (settings.customer_required_fields) {
+                    if (settings.customer_required_fields.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_required_fields.indexOf("full_address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            scope.isEditableField = function (field) {
+                var settings = SettingsService.get().app;
+                if (settings.customer_edit_permissions) {
+                    if (settings.customer_edit_permissions.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_edit_permissions.indexOf("address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         }
     };
 }]);
 
 
-app.directive('customerEdit', ['ApiService', function (ApiService) {
+app.directive('customerEdit', ['ApiService', 'SettingsService', function (ApiService, SettingsService) {
     return {
         restrict: 'AE',
         templateUrl: "app/templates/customer.html",
         scope: {
             customer: '=?customerEdit',
-            cart: '=?',
-            invoice: '=?',
             onSave: '=?',
             error: '=?',
         },
@@ -1328,6 +1307,7 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
 
             var customerCopy = {};
             scope.edit = false;
+            scope.submitted = false;
 
             if (attrs.allowEdit === "false") {
                 scope.allowEdit = false;
@@ -1361,6 +1341,7 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
 
                 // Clear any previous errors
                 scope.error = null;
+                scope.submitted = true;
 
                 if (form.$invalid) {
                     return;
@@ -1415,6 +1396,32 @@ app.directive('customerEdit', ['ApiService', function (ApiService) {
                 // Just close the edit.
                 scope.edit = false;
 
+            }
+
+            scope.isRequiredField = function (field) {
+                var settings = SettingsService.get().account;
+                if (settings.customer_required_fields) {
+                    if (settings.customer_required_fields.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_required_fields.indexOf("full_address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            scope.isEditableField = function (field) {
+                var settings = SettingsService.get().app;
+                if (settings.customer_edit_permissions) {
+                    if (settings.customer_edit_permissions.indexOf(field) > -1) {
+                        return true;
+                    }
+                    if (settings.customer_edit_permissions.indexOf("address") > -1 && (field == "address_1" || field == "city" || field == "state_prov" || field == "postal_code" || field == "country")) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
         }

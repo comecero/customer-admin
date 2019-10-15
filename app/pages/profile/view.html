@@ -30,7 +30,7 @@
                     <div class="col-sm-12" ng-if="!customer.username">
                         <p class="no-info" translate>You have not created a username and password</p>
                     </div>
-                    <div ng-if="customer.username">
+                    <div ng-if="customer.username || editCredentials">
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
                                 <label for="name" class="control-label" translate>Username</label>

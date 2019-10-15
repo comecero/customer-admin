@@ -11,7 +11,7 @@
     </div>
 
     <div class="panel panel-body light-shadow">
-        <div object-list type="subscription" url="{{resources.subscriptionListUrl}}" template-url="app/templates/subscriptionList.html" embedded="false" page="cursor" error="exception.error"></div>
+        <div object-list type="subscription" url="{{resources.subscriptionListUrl}}" template-url="app/templates/subscriptionList.html" embedded="false" page="offset" limit="10" error="exception.error"></div>
     </div>
 
 </div>

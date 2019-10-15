@@ -18,53 +18,49 @@
                 <span ng-if="customer.phone"><span translate>Phone</span>: {{customer.phone}}<br></span>
                 <span ng-if="customer.tax_number"><span translate>Tax Number</span>: {{customer.tax_number}}<br></span>
                 <span>ID: <a href="#/profile">{{customer.customer_id}}</a><br></span>
-                <span ng-if="customer.tax_exempt"><i class="fa fa-check-circle text-success"></i>&nbsp;<span translate>Tax Exempt</span><br></span>
             </div>
 
             <div ng-show="edit">
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" ng-show="isEditableField('name') || customer.name">
                     <div class="form-group" show-errors>
-                        <label for="name" class="control-label" translate>Name</label>
-                        <input type="text" class="form-control" name="name" ng-model="customer.name">
+                        <label for="name" class="control-label" ng-class="{required: isRequiredField('name') && isEditableField('name')}" translate>Name</label>
+                        <input type="text" class="form-control" name="name" ng-model="customer.name" ng-required="isRequiredField('name') && isEditableField('name')" ng-show="isEditableField('name')">
+                        <div ng-show="!isEditableField('name')">{{customer.name}}</div>
+                        <p class="help-block hidden fadeInDown" translate>Please provide a valid name</p>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" ng-show="isEditableField('company_name') || customer.company_name">
                     <div class="form-group" show-errors>
-                        <label for="company_name" class="control-label" translate>Company Name</label>
-                        <input type="text" class="form-control" name="company_name" ng-model="customer.company_name">
+                        <label for="company_name" class="control-label" ng-class="{required: isRequiredField('company_name') && isEditableField('company_name')}" translate>Company Name</label>
+                        <input type="text" class="form-control" name="company_name" ng-model="customer.company_name" ng-required="isRequiredField('company_name') && isEditableField('company_name')" ng-show="isEditableField('company_name')">
+                        <div ng-show="!isEditableField('company_name')">{{customer.company_name}}</div>
+                        <p class="help-block hidden fadeInDown" translate>Please provide a valid company name</p>
                     </div>
                 </div>
 
                 <div class="row"></div>
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" ng-show="isEditableField('email') || customer.email">
                     <div class="form-group" show-errors>
-                        <label for="email" class="control-label" translate>Email</label>
-                        <input type="text" class="form-control" name="email" ng-model="customer.email" is-valid-email allow-empty-value="true">
+                        <label for="email" class="control-label" ng-class="{required: isRequiredField('email') && isEditableField('email')}" translate>Email</label>
+                        <input type="text" class="form-control" name="email" ng-model="customer.email" is-valid-email ng-required="isRequiredField('email') && isEditableField('email')" ng-show="isEditableField('email')" allow-empty-value="true">
+                        <div ng-show="!isEditableField('email')">{{customer.email}}</div>
                         <p class="help-block hidden fadeInDown" translate>Please provide a valid email</p>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" ng-show="isEditableField('phone') || customer.phone">
                     <div class="form-group" show-errors>
-                        <label for="phone" class="control-label" translate>Phone</label>
-                        <input type="text" class="form-control" name="phone" ng-model="customer.phone">
+                        <label for="phone" class="control-label" ng-class="{required: isRequiredField('phone') && isEditableField('phone')}" translate>Phone</label>
+                        <input type="text" class="form-control" name="phone" ng-model="customer.phone" ng-required="isRequiredField('phone') && isEditableField('phone')" ng-show="isEditableField('phone')">
+                        <div ng-show="!isEditableField('phone')">{{customer.phone}}</div>
+                        <p class="help-block hidden fadeInDown" translate>Please provide a valid phone</p>
                     </div>
                 </div>
 
                 <div class="row"></div>
-
-                <div class="col-xs-12" ng-if="!customer.customer_id">
-                    <div class="form-group" show-errors>
-                        <label for="company_name" class="control-label" translate>Customer ID</label>
-                        <input type="text" class="form-control" name="company_name" ng-model="customer.customer_id">
-                        <div>
-                            <p class="help-text" translate>Leave blank and we'll create one automatically</p>
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
@@ -73,24 +69,27 @@
             <div class="col-xs-12 col-md-6 spacer-t10">
                 <span class="text-sm"><strong translate>Billing Address</strong></span>
                 <hr class="spacer-t5 spacer-b5" />
-                <div class="spacer-t10" address="customer.billing_address" edit="edit"></div>
+                <div class="spacer-t10" address="customer.billing_address" address-type="billing" submitted="submitted" edit="edit"></div>
             </div>
 
             <div class="col-xs-12 col-md-6 spacer-t10">
                 <span class="text-sm"><strong translate>Shipping Address</strong></span>
                 <hr class="spacer-t5 spacer-b5" />
-                <div class="spacer-t10" address="customer.shipping_address" edit="edit"></div>
+                <div class="spacer-t10" address="customer.shipping_address" address-type="shipping" submitted="submitted" edit="edit"></div>
             </div>
+
+            <div class="row"></div>
 
             <div ng-show="edit">
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6" ng-show="isEditableField('tax_number') || customer.tax_number">
                     <div class="form-group" show-errors>
-                        <label for="tax_number" class="control-label" translate>Tax Number</label>
-                        <input type="text" class="form-control" name="tax_number" ng-model="customer.tax_number">
+                        <label for="tax_number" class="control-label" ng-class="{required: isRequiredField('tax_number') && isEditableField('tax_number')}" translate>Tax Number</label>
+                        <input type="text" class="form-control" name="tax_number" ng-model="customer.tax_number" ng-required="isRequiredField('tax_number') && isEditableField('tax_number')" ng-show="isEditableField('tax_number')">
+                        <div ng-show="!isEditableField('tax_number')">{{customer.tax_number}}</div>
+                        <p class="help-block hidden fadeInDown" translate>Please provide a valid tax number</p>
                     </div>
                 </div>
-
             </div>
 
         </div>

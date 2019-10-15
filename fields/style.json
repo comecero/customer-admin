@@ -1,0 +1,36 @@
+﻿[
+  {
+    "name": "sidebar-color",
+    "type": "color",
+    "label": "Sidebar Background Color",
+    "description": "The background color of the main sidebar menu.",
+    "section": "Style",
+    "required": true,
+    "default_value": "#2c3e50"
+  },
+  {
+    "name": "sidebar-text",
+    "type": "color",
+    "label": "Sidebar Text Color",
+    "description": "The text color of the main sidebar menu. This should be in contrast to the Sidebar Background Color.",
+    "section": "Style",
+    "required": true,
+    "default_value": "#f6f7f8"
+  },
+  {
+    "name": "logo",
+    "type": "image",
+    "label": "Logo",
+    "description": "The logo to display in the upper left of the page.",
+    "section": "Logo",
+    "required": false
+  },
+  {
+    "name": "favicon",
+    "type": "image",
+    "label": "Favicon",
+    "description": "The page favicon image. Providing a square image is highly recommended; images that are not square will automatically be cropped square. For maximum compatibility, the image you provide should be no larger than 196 x 196 pixels.",
+    "section": "Logo",
+    "required": false
+  }
+]
