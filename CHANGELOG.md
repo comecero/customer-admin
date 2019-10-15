@@ -1,4 +1,10 @@
-﻿<a name="1.1.0"></a>
+﻿<a name="1.1.1"></a>
+# 1.1.1
+
+- Hide subscription item edit button when customer subscription downgrades and upgrades are not permitted
+
+
+<a name="1.1.0"></a>
 # 1.1.0
 
 - Refactor login page
