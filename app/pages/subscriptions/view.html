@@ -156,7 +156,7 @@
                                 <tr class="no-border" ng-if="allowCancel && !isEditing(item) && !item.cancelled && !item.cancel_at_current_period_end">
                                     <td class="text-right" colspan="5">
                                         <span class="btn btn-danger btn btn-xs btn-right btn-xs-margin-left" ng-if="allowCancel" cancel-subscription-item subscription="model.subscription" item="item" translate>Cancel Item</span>
-                                        <span class="btn btn-info btn btn-xs btn-right btn-xs-margin-left" ng-click="setEdit(item)" translate>Edit Item</span>
+                                        <span class="btn btn-info btn btn-xs btn-right btn-xs-margin-left" ng-if="allowDowngrade || allowUpgrade" ng-click="setEdit(item)" translate>Edit Item</span>
                                     </td>
                                 </tr>
                                 <tr class="no-border" ng-if="isEditing(item)" ng-repeat="newItem in change_items">
