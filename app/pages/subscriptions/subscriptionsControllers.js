@@ -26,6 +26,8 @@ app.controller("SubscriptionsViewCtrl", ['$scope', '$routeParams', '$location', 
 
     $scope.allCurrencies = JSON.parse(localStorage.getItem("payment_currencies"));
     $scope.allowCancel = SettingsService.get().account.allow_customer_subscription_cancel;
+    $scope.allowDowngrade = SettingsService.get().account.allow_customer_subscription_downgrade;
+    $scope.allowUpgrade = SettingsService.get().account.allow_customer_subscription_upgrade;
 
     // Prep the billing history
     $scope.resources.invoiceListUrl = $scope.url + "/invoices";

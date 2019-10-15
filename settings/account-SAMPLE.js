@@ -11,6 +11,8 @@ window.__settings = window.__settings || {}; window.__settings.account =
         "currencies": [{ "code": "AUD", "name": "Australian Dollar" }, { "code": "CAD", "name": "Canadian Dollar" }, { "code": "EUR", "name": "Euro" }, { "code": "NZD", "name": "New Zealand Dollar" }, { "code": "GBP", "name": "Pound Sterling" }, { "code": "CHF", "name": "Swiss Franc" }, { "code": "USD", "name": "US Dollar" }],
         "payment_method_types": ["amazon_pay", "credit_card", "paypal"],
         "allow_customer_subscription_cancel": true,
+        "allow_customer_subscription_downgrade": true,
+        "allow_customer_subscription_upgrade": true,
         "customer_required_fields": ["name", "email"],
         "company_name": "Kompania",
         "support_website": "https://comecero.com",
