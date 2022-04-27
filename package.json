@@ -17,6 +17,6 @@
     "gulp-zip": "4.0.0",
     "load-grunt-tasks": "3.5.2",
     "run-sequence": "1.2.2",
-    "grunt": "1.0.1"
+    "grunt": "1.5.2"
   }
 }
